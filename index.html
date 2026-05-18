@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Optimistic Future Store — coming soon. A glossy tomorrow, one click at a time." />
+  <title>Optimistic Future Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Tahoma:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --win-gray: #c0c0c0;
+      --win-dark: #808080;
+      --win-darker: #404040;
+      --win-highlight: #ffffff;
+      --win-shadow: #000000;
+      --win-title: #000080;
+      --win-title-text: #ffffff;
+      --glow-cyan: #00f0ff;
+      --glow-magenta: #ff3dff;
+      --glow-gold: #ffd54a;
+      --glass: rgba(255, 255, 255, 0.08);
+      --glass-border: rgba(255, 255, 255, 0.35);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: Tahoma, "MS Sans Serif", Geneva, sans-serif;
+      font-size: 11px;
+      color: #e8f4ff;
+      background: #0a0e1a;
+      overflow-x: hidden;
+    }
+
+    /* Win98 outset / inset borders */
+    .win-outset {
+      border: 2px solid;
+      border-color: var(--win-highlight) var(--win-shadow) var(--win-shadow) var(--win-highlight);
+    }
+
+    .win-inset {
+      border: 2px solid;
+      border-color: var(--win-shadow) var(--win-highlight) var(--win-highlight) var(--win-shadow);
+    }
+
+    .win-btn {
+      background: var(--win-gray);
+      color: #000;
+      font-family: inherit;
+      font-size: 11px;
+      padding: 4px 12px;
+      cursor: pointer;
+      border: 2px solid;
+      border-color: var(--win-highlight) var(--win-shadow) var(--win-shadow) var(--win-highlight);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .win-btn:active,
+    .win-btn.active {
+      border-color: var(--win-shadow) var(--win-highlight) var(--win-highlight) var(--win-shadow);
+      padding: 5px 11px 3px 13px;
+    }
+
+    .win-btn:focus-visible {
+      outline: 1px dotted #000;
+      outline-offset: -4px;
+    }
+
+    /* ——— Navigation ——— */
+    .taskbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 4px;
+      background: var(--win-gray);
+      border-bottom: 2px solid var(--win-shadow);
+      flex-wrap: wrap;
+    }
+
+    .start-btn {
+      font-weight: 700;
+      padding: 3px 10px 3px 6px;
+    }
+
+    .start-btn .flag {
+      display: inline-flex;
+      width: 16px;
+      height: 14px;
+      background: linear-gradient(135deg, var(--glow-cyan), var(--glow-magenta));
+      border-radius: 1px;
+      box-shadow: inset 0 0 4px rgba(255, 255, 255, 0.6);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      flex: 1;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      color: #000;
+    }
+
+    .taskbar-clock {
+      margin-left: auto;
+      padding: 4px 10px;
+      background: var(--win-gray);
+      color: #000;
+      min-width: 72px;
+      text-align: center;
+    }
+
+    .menu-toggle {
+      display: none;
+    }
+
+    /* ——— Hero backdrop ——— */
+    .hero-wrap {
+      position: relative;
+      min-height: calc(100vh - 32px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 20px 80px;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 20%, rgba(0, 240, 255, 0.25), transparent 50%),
+        radial-gradient(ellipse 70% 50% at 80% 30%, rgba(255, 61, 255, 0.2), transparent 45%),
+        radial-gradient(ellipse 60% 40% at 50% 90%, rgba(255, 213, 74, 0.15), transparent 40%),
+        linear-gradient(165deg, #0a0e1a 0%, #121a2e 40%, #1a0a28 100%);
+    }
+
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black, transparent);
+      perspective: 600px;
+      transform: rotateX(55deg) scale(1.4);
+      transform-origin: center 80%;
+      opacity: 0.6;
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      pointer-events: none;
+      animation: float 12s ease-in-out infinite;
+    }
+
+    .orb-1 {
+      width: 320px;
+      height: 320px;
+      background: var(--glow-cyan);
+      top: 10%;
+      left: 5%;
+      opacity: 0.35;
+    }
+
+    .orb-2 {
+      width: 280px;
+      height: 280px;
+      background: var(--glow-magenta);
+      top: 20%;
+      right: 10%;
+      opacity: 0.3;
+      animation-delay: -4s;
+    }
+
+    .orb-3 {
+      width: 200px;
+      height: 200px;
+      background: var(--glow-gold);
+      bottom: 15%;
+      left: 40%;
+      opacity: 0.25;
+      animation-delay: -8s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(20px, -30px) scale(1.08); }
+    }
+
+    /* ——— Hero content ——— */
+    .hero-panel {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 720px;
+      text-align: center;
+    }
+
+    .hero-window {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.04) 100%);
+      border: 1px solid var(--glass-border);
+      border-radius: 4px;
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.4),
+        0 24px 80px rgba(0, 240, 255, 0.12),
+        0 8px 32px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      overflow: hidden;
+    }
+
+    .hero-titlebar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 3px 4px;
+      background: linear-gradient(90deg, var(--win-title), #1084d0);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--win-title-text);
+    }
+
+    .titlebar-buttons {
+      display: flex;
+      gap: 2px;
+    }
+
+    .titlebar-buttons span {
+      width: 16px;
+      height: 14px;
+      background: var(--win-gray);
+      font-size: 9px;
+      line-height: 12px;
+      color: #000;
+      text-align: center;
+    }
+
+    .titlebar-buttons span.win-inset {
+      line-height: 10px;
+    }
+
+    .hero-body {
+      padding: 40px 28px 36px;
+    }
+
+    .badge {
+      display: inline-block;
+      font-family: Tahoma, sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #000;
+      background: var(--win-gray);
+      padding: 4px 10px;
+      margin-bottom: 20px;
+    }
+
+    .hero-headline {
+      font-family: Orbitron, sans-serif;
+      font-weight: 900;
+      font-size: clamp(2rem, 6vw, 3.25rem);
+      line-height: 1.1;
+      letter-spacing: 0.02em;
+      background: linear-gradient(
+        120deg,
+        #fff 0%,
+        var(--glow-cyan) 25%,
+        #fff 45%,
+        var(--glow-magenta) 65%,
+        var(--glow-gold) 85%,
+        #fff 100%
+      );
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: shine 6s linear infinite;
+      text-shadow: none;
+      filter: drop-shadow(0 0 24px rgba(0, 240, 255, 0.35));
+    }
+
+    @keyframes shine {
+      to { background-position: 200% center; }
+    }
+
+    .hero-sub {
+      margin-top: 16px;
+      font-size: clamp(13px, 2.5vw, 15px);
+      line-height: 1.6;
+      color: rgba(232, 244, 255, 0.85);
+      max-width: 520px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* ——— Signup form ——— */
+    .signup {
+      margin-top: 32px;
+      text-align: left;
+    }
+
+    .signup-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      color: #000;
+      background: var(--win-gray);
+      padding: 6px 8px;
+      margin-bottom: 0;
+    }
+
+    .signup-fields {
+      display: flex;
+      gap: 0;
+      flex-wrap: wrap;
+      background: var(--win-gray);
+      padding: 8px;
+    }
+
+    .signup-fields.win-inset {
+      border-width: 2px;
+    }
+
+    .signup input[type="email"] {
+      flex: 1 1 200px;
+      min-width: 0;
+      padding: 8px 10px;
+      font-family: inherit;
+      font-size: 11px;
+      background: #fff;
+      color: #000;
+      border: none;
+    }
+
+    .signup input[type="email"].win-inset {
+      border-width: 2px;
+    }
+
+    .signup input[type="email"]:focus {
+      outline: 2px solid var(--win-title);
+      outline-offset: -2px;
+    }
+
+    .signup input[type="email"]::placeholder {
+      color: #808080;
+    }
+
+    .signup .win-btn {
+      flex: 0 0 auto;
+      margin-top: 0;
+      padding: 8px 16px;
+      font-weight: 700;
+    }
+
+    .signup-hint {
+      margin-top: 10px;
+      font-size: 10px;
+      color: rgba(232, 244, 255, 0.55);
+      text-align: center;
+    }
+
+    .form-message {
+      margin-top: 12px;
+      padding: 8px 12px;
+      font-size: 11px;
+      display: none;
+    }
+
+    .form-message.visible {
+      display: block;
+    }
+
+    .form-message.success {
+      background: #c0ffc0;
+      color: #004000;
+      border: 2px solid;
+      border-color: var(--win-highlight) var(--win-shadow) var(--win-shadow) var(--win-highlight);
+    }
+
+    .form-message.error {
+      background: #ffc0c0;
+      color: #400000;
+    }
+
+    /* ——— Footer strip ——— */
+    .status-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      gap: 0;
+      padding: 2px 4px;
+      background: var(--win-gray);
+      border-top: 2px solid var(--win-highlight);
+      color: #000;
+      font-size: 11px;
+      z-index: 50;
+    }
+
+    .status-bar .panel {
+      padding: 2px 8px;
+    }
+
+    .status-bar .panel.win-inset {
+      flex: 1;
+      border-width: 1px;
+    }
+
+    /* ——— Mobile ——— */
+    @media (max-width: 640px) {
+      .menu-toggle {
+        display: inline-flex;
+        margin-left: auto;
+      }
+
+      .nav-links {
+        display: none;
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+        order: 10;
+        padding-top: 4px;
+      }
+
+      .nav-links.open {
+        display: flex;
+      }
+
+      .nav-links .win-btn {
+        justify-content: center;
+        width: 100%;
+      }
+
+      .taskbar-clock {
+        margin-left: 0;
+        order: 5;
+      }
+
+      .hero-body {
+        padding: 28px 16px 24px;
+      }
+
+      .signup-fields {
+        flex-direction: column;
+      }
+
+      .signup .win-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 10px;
+      }
+
+      .signup .win-btn:active {
+        padding: 11px 9px 9px 11px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="taskbar win-outset" role="banner">
+    <button type="button" class="win-btn start-btn" aria-label="Start menu">
+      <span class="flag" aria-hidden="true"></span>
+      Start
+    </button>
+    <nav class="nav-links" id="navLinks" aria-label="Main">
+      <a class="win-btn" href="#hero">Home</a>
+      <a class="win-btn" href="#signup">Notify Me</a>
+      <a class="win-btn" href="#about">About</a>
+    </nav>
+    <button type="button" class="win-btn menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="navLinks">
+      Menu ▾
+    </button>
+    <time class="taskbar-clock win-inset" id="clock" datetime="">12:00 PM</time>
+  </header>
+
+  <main>
+    <section class="hero-wrap" id="hero" aria-labelledby="hero-heading">
+      <div class="hero-bg" aria-hidden="true">
+        <div class="hero-grid" aria-hidden="true"></div>
+        <div class="orb orb-1" aria-hidden="true"></div>
+        <div class="orb orb-2" aria-hidden="true"></div>
+        <div class="orb orb-3" aria-hidden="true"></div>
+      </div>
+
+      <div class="hero-panel">
+        <article class="hero-window">
+          <div class="hero-titlebar" aria-hidden="true">
+            <span>Optimistic Future Store.exe</span>
+            <div class="titlebar-buttons">
+              <span class="win-inset">_</span>
+              <span class="win-inset">□</span>
+              <span class="win-inset">×</span>
+            </div>
+          </div>
+          <div class="hero-body">
+            <p class="badge win-outset">Coming Soon · v0.98</p>
+            <h1 class="hero-headline" id="hero-heading">The Future, Glossy &amp; Optimistic</h1>
+            <p class="hero-sub" id="about">
+              Retro navigation meets tomorrow’s shine. We’re building a store for products that
+              believe the best is still ahead — and we’ll let you know the moment we open.
+            </p>
+
+            <form
+              class="signup"
+              id="signup"
+              name="coming-soon"
+              method="POST"
+              action="/"
+              data-netlify="true"
+              novalidate
+            >
+              <input type="hidden" name="form-name" value="coming-soon" />
+              <label class="signup-label win-outset" for="email">Notify me when we launch</label>
+              <div class="signup-fields win-inset">
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  class="win-inset"
+                  placeholder="you@example.com"
+                  autocomplete="email"
+                  required
+                  aria-describedby="signup-hint form-message"
+                />
+                <button type="submit" class="win-btn">Sign Up</button>
+              </div>
+              <p class="signup-hint" id="signup-hint">No spam. Unsubscribe anytime. Your optimism is safe with us.</p>
+              <p class="form-message" id="form-message" role="status" aria-live="polite"></p>
+            </form>
+          </div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="status-bar" role="contentinfo">
+    <span class="panel win-inset">Ready</span>
+    <span class="panel win-inset" id="statusText">Optimistic Future Store — launching soon</span>
+  </footer>
+
+  <script>
+    (function () {
+      var clockEl = document.getElementById("clock");
+      function updateClock() {
+        var now = new Date();
+        var hours = now.getHours();
+        var mins = now.getMinutes().toString().padStart(2, "0");
+        var ampm = hours >= 12 ? "PM" : "AM";
+        hours = hours % 12 || 12;
+        var text = hours + ":" + mins + " " + ampm;
+        clockEl.textContent = text;
+        clockEl.setAttribute("datetime", now.toISOString());
+      }
+      updateClock();
+      setInterval(updateClock, 1000);
+
+      var toggle = document.getElementById("menuToggle");
+      var nav = document.getElementById("navLinks");
+      toggle.addEventListener("click", function () {
+        var open = nav.classList.toggle("open");
+        toggle.setAttribute("aria-expanded", open ? "true" : "false");
+      });
+
+      nav.querySelectorAll("a").forEach(function (link) {
+        link.addEventListener("click", function () {
+          nav.classList.remove("open");
+          toggle.setAttribute("aria-expanded", "false");
+        });
+      });
+
+      var form = document.getElementById("signup");
+      var message = document.getElementById("form-message");
+      var emailInput = document.getElementById("email");
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        message.classList.remove("visible", "success", "error");
+
+        var value = emailInput.value.trim();
+        if (!value || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+          message.textContent = "Please enter a valid email address.";
+          message.classList.add("visible", "error", "win-outset");
+          emailInput.focus();
+          return;
+        }
+
+        var submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.disabled = true;
+
+        fetch("/", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams({
+            "form-name": "coming-soon",
+            email: value,
+          }).toString(),
+        })
+          .then(function (res) {
+            if (!res.ok) throw new Error("Submit failed");
+            message.textContent =
+              "You're on the list! We'll email you when Optimistic Future Store goes live.";
+            message.classList.add("visible", "success");
+            form.reset();
+            document.getElementById("statusText").textContent =
+              "Thank you — you're on the notify list";
+          })
+          .catch(function () {
+            message.textContent = "Something went wrong. Please try again.";
+            message.classList.add("visible", "error", "win-outset");
+          })
+          .finally(function () {
+            submitBtn.disabled = false;
+          });
+      });
+    })();
+  </script>
+</body>
+</html>
