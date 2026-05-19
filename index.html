@@ -505,6 +505,17 @@
       width: 100%;
     }
 
+    .glass-card--tee {
+      border-color: rgba(0, 200, 255, 0.28);
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.35),
+        0 0 20px rgba(0, 180, 255, 0.22),
+        0 0 40px rgba(16, 132, 208, 0.14),
+        0 0 64px rgba(0, 120, 255, 0.08),
+        0 16px 48px rgba(0, 240, 255, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.45);
+    }
+
     .glass-card--tee .product-desc {
       margin-bottom: 0.5rem;
     }
@@ -515,18 +526,189 @@
       color: rgba(165, 243, 252, 0.9);
     }
 
-    .stripe-checkout {
-      margin-top: 1rem;
+    .product-cta {
+      margin-top: auto;
       width: 100%;
-      display: flex;
-      justify-content: center;
-      padding-top: 0;
+      padding-top: 1rem;
     }
 
-    .stripe-checkout stripe-buy-button {
+    .product-cta .win98-btn {
+      letter-spacing: 0.02em;
+      text-transform: none;
+    }
+
+    /* ——— Aero Sphere modal ——— */
+    .aero-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 300;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      padding-bottom: 36px;
+      background: rgba(4, 8, 18, 0.82);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.2s ease, visibility 0.2s ease;
+    }
+
+    .aero-modal.is-open {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    body.modal-open {
+      overflow: hidden;
+    }
+
+    .aero-modal__window {
+      width: min(920px, 100%);
+      max-height: calc(100vh - 48px);
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, rgba(255, 255, 255, 0.05) 100%);
+      border: 1px solid var(--glass-border);
+      border-radius: 4px;
+      box-shadow:
+        0 0 24px rgba(0, 180, 255, 0.25),
+        0 0 64px rgba(0, 120, 255, 0.12),
+        0 24px 80px rgba(0, 0, 0, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.45);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      overflow: hidden;
+    }
+
+    .aero-modal__titlebar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 3px 4px 3px 8px;
+      background: linear-gradient(90deg, var(--win-title), #1084d0);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--win-title-text);
+      flex-shrink: 0;
+    }
+
+    .aero-modal__close {
+      min-width: 20px;
+      padding: 2px 8px;
+      font-size: 12px;
+      line-height: 1;
+    }
+
+    .aero-modal__body {
+      padding: 12px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .zoom-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 8px;
+      background: var(--win-gray);
+      border: 2px solid;
+      border-color: var(--win-shadow) var(--win-highlight) var(--win-highlight) var(--win-shadow);
+    }
+
+    .zoom-toolbar .win-btn {
+      min-width: 28px;
+      justify-content: center;
+      padding: 4px 10px;
+    }
+
+    .zoom-level {
+      min-width: 48px;
+      text-align: center;
+      color: #000;
+      font-weight: 700;
+      font-family: "Courier New", Courier, monospace;
+    }
+
+    .zoom-hint {
+      margin-left: auto;
+      color: #000;
+      font-size: 10px;
+      opacity: 0.75;
+    }
+
+    .zoom-viewport {
+      position: relative;
+      width: 100%;
+      height: min(52vh, 520px);
+      min-height: 240px;
+      overflow: hidden;
+      background: #0a0e1a;
+      border: 2px solid;
+      border-color: var(--win-shadow) var(--win-highlight) var(--win-highlight) var(--win-shadow);
+      cursor: zoom-in;
+      touch-action: none;
+      user-select: none;
+    }
+
+    .zoom-viewport.is-grabbing {
+      cursor: grabbing;
+    }
+
+    .zoom-viewport.is-grab {
+      cursor: grab;
+    }
+
+    .zoom-stage {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform-origin: center center;
+      will-change: transform;
+    }
+
+    .zoom-stage img {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      pointer-events: none;
+    }
+
+    .modal-stripe-checkout {
+      display: flex;
+      justify-content: center;
+      padding: 4px 8px 8px;
+      background: var(--win-gray);
+      border: 2px solid;
+      border-color: var(--win-highlight) var(--win-shadow) var(--win-shadow) var(--win-highlight);
+    }
+
+    .modal-stripe-checkout stripe-buy-button {
       display: block;
       width: 100%;
-      max-width: 280px;
+      max-width: 320px;
+    }
+
+    @media (max-width: 640px) {
+      .zoom-hint {
+        flex-basis: 100%;
+        margin-left: 0;
+      }
+
+      .zoom-viewport {
+        height: min(42vh, 400px);
+      }
     }
 
     .product-price {
@@ -724,11 +906,8 @@
         <p class="product-desc product-desc--fit">
           Unisex fit for all genders. Available in sizes S through 2XL. Oversized high-neck silhouette.
         </p>
-        <div class="stripe-checkout">
-          <stripe-buy-button
-            buy-button-id="buy_btn_1TYp4m3unV2Hlt8H7hCthucn"
-            publishable-key="pk_test_51TYYR03unV2Hlt8HHpwmAiDHihmPtr7PI7t1D6O2Usl10XzYKygPNAc2bqm3HzxwRowXytc82GCyv9CbbLPe2bcW00HEUIGbAz"
-          ></stripe-buy-button>
+        <div class="product-cta">
+          <button type="button" class="win98-btn" id="aeroViewBuy">View &amp; Buy</button>
         </div>
       </article>
 
@@ -757,6 +936,45 @@
       </article>
     </section>
   </main>
+
+  <div id="aeroModal" class="aero-modal" role="dialog" aria-modal="true" aria-labelledby="aeroModalTitle" aria-hidden="true">
+    <div class="aero-modal__window">
+      <div class="aero-modal__titlebar">
+        <span id="aeroModalTitle">Aero Sphere — View &amp; Buy</span>
+        <button type="button" class="win-btn aero-modal__close" id="aeroModalClose" data-aero-close aria-label="Close">×</button>
+      </div>
+      <div class="aero-modal__body">
+        <div class="zoom-toolbar">
+          <button type="button" class="win-btn" id="zoomOut" aria-label="Zoom out">−</button>
+          <span class="zoom-level" id="zoomLevel" aria-live="polite">100%</span>
+          <button type="button" class="win-btn" id="zoomIn" aria-label="Zoom in">+</button>
+          <button type="button" class="win-btn" id="zoomReset">Reset</button>
+          <span class="zoom-hint">Scroll or pinch to zoom · Double-click to toggle · Drag when zoomed</span>
+        </div>
+        <div class="zoom-viewport" id="zoomViewport">
+          <div class="zoom-stage" id="zoomStage">
+            <picture>
+              <source srcset="images/aero-sphere-design-4k.png" type="image/png" />
+              <img
+                id="aeroDesignImg"
+                src="images/aero-sphere-design-4k.svg"
+                alt="Aero Sphere print design at 4K resolution"
+                width="3840"
+                height="3840"
+                decoding="async"
+              />
+            </picture>
+          </div>
+        </div>
+        <div class="modal-stripe-checkout">
+          <stripe-buy-button
+            buy-button-id="buy_btn_1TYp4m3unV2Hlt8H7hCthucn"
+            publishable-key="pk_test_51TYYR03unV2Hlt8HHpwmAiDHihmPtr7PI7t1D6O2Usl10XzYKygPNAc2bqm3HzxwRowXytc82GCyv9CbbLPe2bcW00HEUIGbAz"
+          ></stripe-buy-button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <footer class="status-bar" role="contentinfo">
     <span class="panel win-inset">Ready</span>
@@ -837,6 +1055,167 @@
             submitBtn.disabled = false;
           });
       });
+
+      var modal = document.getElementById("aeroModal");
+      var openBtn = document.getElementById("aeroViewBuy");
+      var viewport = document.getElementById("zoomViewport");
+      var stage = document.getElementById("zoomStage");
+      var zoomLevel = document.getElementById("zoomLevel");
+      var scale = 1;
+      var panX = 0;
+      var panY = 0;
+      var isDragging = false;
+      var dragStartX = 0;
+      var dragStartY = 0;
+      var dragPanX = 0;
+      var dragPanY = 0;
+      var minScale = 1;
+      var maxScale = 4;
+
+      function clamp(value, min, max) {
+        return Math.min(max, Math.max(min, value));
+      }
+
+      function updateZoomUi() {
+        stage.style.transform =
+          "translate(" + panX + "px, " + panY + "px) scale(" + scale + ")";
+        zoomLevel.textContent = Math.round(scale * 100) + "%";
+        viewport.classList.remove("is-grab", "is-grabbing");
+        if (scale > 1) {
+          viewport.classList.add(isDragging ? "is-grabbing" : "is-grab");
+        }
+      }
+
+      function resetZoom() {
+        scale = 1;
+        panX = 0;
+        panY = 0;
+        updateZoomUi();
+      }
+
+      function setScale(next) {
+        scale = clamp(next, minScale, maxScale);
+        if (scale === 1) {
+          panX = 0;
+          panY = 0;
+        }
+        updateZoomUi();
+      }
+
+      function openModal() {
+        modal.classList.add("is-open");
+        modal.setAttribute("aria-hidden", "false");
+        document.body.classList.add("modal-open");
+        resetZoom();
+        document.getElementById("aeroModalClose").focus();
+      }
+
+      function closeModal() {
+        modal.classList.remove("is-open");
+        modal.setAttribute("aria-hidden", "true");
+        document.body.classList.remove("modal-open");
+        resetZoom();
+        openBtn.focus();
+      }
+
+      openBtn.addEventListener("click", openModal);
+
+      document.querySelectorAll("[data-aero-close]").forEach(function (el) {
+        el.addEventListener("click", closeModal);
+      });
+
+      modal.addEventListener("click", function (e) {
+        if (e.target === modal) closeModal();
+      });
+
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && modal.classList.contains("is-open")) {
+          closeModal();
+        }
+      });
+
+      document.getElementById("zoomIn").addEventListener("click", function () {
+        setScale(scale * 1.25);
+      });
+
+      document.getElementById("zoomOut").addEventListener("click", function () {
+        setScale(scale / 1.25);
+      });
+
+      document.getElementById("zoomReset").addEventListener("click", resetZoom);
+
+      viewport.addEventListener(
+        "wheel",
+        function (e) {
+          if (!modal.classList.contains("is-open")) return;
+          e.preventDefault();
+          var factor = e.deltaY < 0 ? 1.12 : 0.9;
+          setScale(scale * factor);
+        },
+        { passive: false }
+      );
+
+      viewport.addEventListener("dblclick", function () {
+        if (scale === 1) {
+          setScale(2.5);
+        } else {
+          resetZoom();
+        }
+      });
+
+      viewport.addEventListener("mousedown", function (e) {
+        if (scale <= 1) return;
+        isDragging = true;
+        dragStartX = e.clientX;
+        dragStartY = e.clientY;
+        dragPanX = panX;
+        dragPanY = panY;
+        updateZoomUi();
+      });
+
+      window.addEventListener("mousemove", function (e) {
+        if (!isDragging) return;
+        panX = dragPanX + (e.clientX - dragStartX);
+        panY = dragPanY + (e.clientY - dragStartY);
+        updateZoomUi();
+      });
+
+      window.addEventListener("mouseup", function () {
+        if (!isDragging) return;
+        isDragging = false;
+        updateZoomUi();
+      });
+
+      var lastTouchDistance = 0;
+      viewport.addEventListener(
+        "touchstart",
+        function (e) {
+          if (e.touches.length === 2) {
+            lastTouchDistance = Math.hypot(
+              e.touches[0].clientX - e.touches[1].clientX,
+              e.touches[0].clientY - e.touches[1].clientY
+            );
+          }
+        },
+        { passive: true }
+      );
+
+      viewport.addEventListener(
+        "touchmove",
+        function (e) {
+          if (e.touches.length !== 2) return;
+          e.preventDefault();
+          var distance = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+          );
+          if (lastTouchDistance > 0) {
+            setScale(scale * (distance / lastTouchDistance));
+          }
+          lastTouchDistance = distance;
+        },
+        { passive: false }
+      );
     })();
   </script>
 </body>
