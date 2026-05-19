@@ -526,6 +526,23 @@
       color: rgba(165, 243, 252, 0.9);
     }
 
+    .glass-card--tee .product-card-image {
+      width: 100%;
+      aspect-ratio: 1;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .glass-card--tee .product-card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
     .product-cta {
       margin-top: auto;
       width: 100%;
@@ -676,7 +693,14 @@
       will-change: transform;
     }
 
-    .zoom-stage img {
+    .zoom-gallery {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .zoom-stage img#aeroDesignImg {
+      flex-shrink: 0;
       max-width: 100%;
       max-height: 100%;
       width: auto;
@@ -685,13 +709,64 @@
       pointer-events: none;
     }
 
-    .modal-stripe-checkout {
+    .zoom-thumbnails {
       display: flex;
+      align-items: center;
       justify-content: center;
-      padding: 4px 8px 8px;
+      gap: 8px;
+      padding: 6px 8px;
+      background: rgba(192, 192, 192, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.4);
+    }
+
+    .zoom-thumb {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 4px;
       background: var(--win-gray);
       border: 2px solid;
       border-color: var(--win-highlight) var(--win-shadow) var(--win-shadow) var(--win-highlight);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 10px;
+      font-weight: 700;
+      color: #000;
+    }
+
+    .zoom-thumb:hover {
+      filter: brightness(1.05);
+    }
+
+    .zoom-thumb.is-active {
+      border-color: var(--win-shadow) var(--win-highlight) var(--win-highlight) var(--win-shadow);
+      outline: 2px dotted var(--win-title);
+      outline-offset: 1px;
+    }
+
+    .zoom-thumb img {
+      width: 72px;
+      height: 72px;
+      object-fit: cover;
+      display: block;
+      border: 1px solid rgba(0, 0, 0, 0.25);
+      pointer-events: none;
+    }
+
+    .modal-stripe-checkout {
+      display: flex;
+      justify-content: center;
+      padding: 10px 12px 12px;
+      background: rgba(192, 192, 192, 0.45);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.42);
+      box-shadow:
+        inset 1px 1px 0 rgba(255, 255, 255, 0.55),
+        inset -1px -1px 0 rgba(0, 0, 0, 0.18),
+        0 0 0 1px rgba(0, 0, 0, 0.22);
     }
 
     .modal-stripe-checkout stripe-buy-button {
@@ -901,6 +976,15 @@
       <h2 id="products-heading" class="products-heading">Featured Products</h2>
 
       <article class="glass-card glass-card--tee">
+        <div class="product-card-image">
+          <img
+            src="images/front facing man.png"
+            alt="Aero Sphere tee — front view on model"
+            width="800"
+            height="800"
+            loading="lazy"
+          />
+        </div>
         <h3>Aero Sphere</h3>
         <p class="product-desc">Premium 200gsm, 100% Organic Cotton, Oversized Fit. High-gloss liquid print.</p>
         <p class="product-desc product-desc--fit">
@@ -951,19 +1035,42 @@
           <button type="button" class="win-btn" id="zoomReset">Reset</button>
           <span class="zoom-hint">Scroll or pinch to zoom · Double-click to toggle · Drag when zoomed</span>
         </div>
-        <div class="zoom-viewport" id="zoomViewport">
-          <div class="zoom-stage" id="zoomStage">
-            <picture>
-              <source srcset="images/aero-sphere-design-4k.png" type="image/png" />
+        <div class="zoom-gallery">
+          <div class="zoom-viewport" id="zoomViewport">
+            <div class="zoom-stage" id="zoomStage">
               <img
                 id="aeroDesignImg"
-                src="images/aero-sphere-design-4k.svg"
-                alt="Aero Sphere print design at 4K resolution"
-                width="3840"
-                height="3840"
+                src="images/unisex shirt image.png"
+                alt="Aero Sphere unisex shirt — front print view"
                 decoding="async"
               />
-            </picture>
+            </div>
+          </div>
+          <div class="zoom-thumbnails" role="tablist" aria-label="Product views">
+            <button
+              type="button"
+              class="zoom-thumb is-active"
+              role="tab"
+              aria-selected="true"
+              data-view="front"
+              data-src="images/unisex shirt image.png"
+              data-alt="Aero Sphere unisex shirt — front print view"
+            >
+              <img src="images/unisex shirt image.png" alt="" width="72" height="72" />
+              <span>Front</span>
+            </button>
+            <button
+              type="button"
+              class="zoom-thumb"
+              role="tab"
+              aria-selected="false"
+              data-view="back"
+              data-src="images/unisex facing back.png"
+              data-alt="Aero Sphere unisex shirt — back view"
+            >
+              <img src="images/unisex facing back.png" alt="" width="72" height="72" />
+              <span>Back</span>
+            </button>
           </div>
         </div>
         <div class="modal-stripe-checkout">
@@ -1060,7 +1167,10 @@
       var openBtn = document.getElementById("aeroViewBuy");
       var viewport = document.getElementById("zoomViewport");
       var stage = document.getElementById("zoomStage");
+      var designImg = document.getElementById("aeroDesignImg");
       var zoomLevel = document.getElementById("zoomLevel");
+      var imageFront = "images/unisex shirt image.png";
+      var imageBack = "images/unisex facing back.png";
       var scale = 1;
       var panX = 0;
       var panY = 0;
@@ -1102,11 +1212,30 @@
         updateZoomUi();
       }
 
+      function setZoomImage(src, alt, activeThumb) {
+        designImg.src = src;
+        designImg.alt = alt;
+        document.querySelectorAll(".zoom-thumb").forEach(function (btn) {
+          var isActive = btn === activeThumb;
+          btn.classList.toggle("is-active", isActive);
+          btn.setAttribute("aria-selected", isActive ? "true" : "false");
+        });
+        resetZoom();
+      }
+
+      document.querySelectorAll(".zoom-thumb").forEach(function (thumb) {
+        thumb.addEventListener("click", function () {
+          if (thumb.classList.contains("is-active")) return;
+          setZoomImage(thumb.getAttribute("data-src"), thumb.getAttribute("data-alt"), thumb);
+        });
+      });
+
       function openModal() {
+        var frontThumb = document.querySelector('.zoom-thumb[data-view="front"]');
+        setZoomImage(imageFront, frontThumb.getAttribute("data-alt"), frontThumb);
         modal.classList.add("is-open");
         modal.setAttribute("aria-hidden", "false");
         document.body.classList.add("modal-open");
-        resetZoom();
         document.getElementById("aeroModalClose").focus();
       }
 
@@ -1115,6 +1244,7 @@
         modal.setAttribute("aria-hidden", "true");
         document.body.classList.remove("modal-open");
         resetZoom();
+        designImg.src = imageFront;
         openBtn.focus();
       }
 
