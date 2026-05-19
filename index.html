@@ -506,15 +506,21 @@
     }
 
     .glass-card--tee .product-desc {
-      margin-bottom: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .glass-card--tee .product-desc--fit {
+      margin-top: 0;
+      margin-bottom: 0;
+      color: rgba(165, 243, 252, 0.9);
     }
 
     .stripe-checkout {
-      margin-top: auto;
+      margin-top: 1rem;
       width: 100%;
       display: flex;
       justify-content: center;
-      padding-top: 0.5rem;
+      padding-top: 0;
     }
 
     .stripe-checkout stripe-buy-button {
@@ -713,8 +719,11 @@
       <h2 id="products-heading" class="products-heading">Featured Products</h2>
 
       <article class="glass-card glass-card--tee">
-        <h3>Utopian Mesh Tee</h3>
-        <p class="product-desc">Premium 240gsm organic cotton with high-gloss liquid print.</p>
+        <h3>Aero Sphere</h3>
+        <p class="product-desc">Premium 200gsm, 100% Organic Cotton, Oversized Fit. High-gloss liquid print.</p>
+        <p class="product-desc product-desc--fit">
+          Unisex fit for all genders. Available in sizes S through 2XL. Oversized high-neck silhouette.
+        </p>
         <div class="stripe-checkout">
           <stripe-buy-button
             buy-button-id="buy_btn_1TYp4m3unV2Hlt8H7hCthucn"
