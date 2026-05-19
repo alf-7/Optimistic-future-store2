@@ -139,7 +139,7 @@
     /* ——— Hero backdrop ——— */
     .hero-wrap {
       position: relative;
-      min-height: calc(100vh - 32px);
+      min-height: min(100vh - 32px, 900px);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -410,6 +410,128 @@
       color: #400000;
     }
 
+    /* ——— Products ——— */
+    .products-section {
+      position: relative;
+      z-index: 2;
+      max-width: 72rem;
+      margin: 0 auto;
+      padding: 24px 24px 56px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    @media (min-width: 768px) {
+      .products-section {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .products-heading {
+      grid-column: 1 / -1;
+      font-family: Orbitron, sans-serif;
+      font-size: clamp(1.25rem, 3vw, 1.5rem);
+      font-weight: 700;
+      text-align: center;
+      color: #e8f4ff;
+      margin-bottom: 8px;
+    }
+
+    .glass-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem;
+      border-radius: 12px;
+      background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.12) 0%,
+        rgba(255, 255, 255, 0.04) 100%
+      );
+      border: 1px solid var(--glass-border);
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.35),
+        0 16px 48px rgba(0, 240, 255, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .product-mockup {
+      width: 100%;
+      aspect-ratio: 1;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .product-mockup span {
+      color: rgba(255, 255, 255, 0.3);
+      font-style: italic;
+      font-size: 11px;
+      text-align: center;
+      padding: 8px;
+    }
+
+    .glass-card h3 {
+      color: #fff;
+      font-family: Orbitron, sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .glass-card .product-desc {
+      color: #a5f3fc;
+      font-size: 13px;
+      line-height: 1.5;
+      text-align: center;
+      margin: 0.5rem 0;
+    }
+
+    .product-footer {
+      margin-top: auto;
+      width: 100%;
+      padding-top: 1rem;
+    }
+
+    .product-price {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: #fff;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 1.125rem;
+    }
+
+    .win98-btn {
+      width: 100%;
+      padding: 8px 12px;
+      background: var(--win-gray);
+      color: #000;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: -0.04em;
+      cursor: pointer;
+      border: 2px solid;
+      border-color: var(--win-highlight) var(--win-shadow) var(--win-shadow) var(--win-highlight);
+    }
+
+    .win98-btn:active {
+      border-color: var(--win-shadow) var(--win-highlight) var(--win-highlight) var(--win-shadow);
+      padding: 9px 11px 7px 13px;
+    }
+
+    .win98-btn:focus-visible {
+      outline: 1px dotted #000;
+      outline-offset: -4px;
+    }
+
     /* ——— Footer strip ——— */
     .status-bar {
       position: fixed;
@@ -494,6 +616,7 @@
     </button>
     <nav class="nav-links" id="navLinks" aria-label="Main">
       <a class="win-btn" href="#hero">Home</a>
+      <a class="win-btn" href="#products">Shop</a>
       <a class="win-btn" href="#signup">Notify Me</a>
       <a class="win-btn" href="#about">About</a>
     </nav>
@@ -561,11 +684,51 @@
         </article>
       </div>
     </section>
+
+    <section id="products" class="products-section" aria-labelledby="products-heading">
+      <h2 id="products-heading" class="products-heading">Featured Products</h2>
+
+      <article class="glass-card">
+        <div class="product-mockup" aria-hidden="true">
+          <span>TEE_MOCKUP_V1.PNG</span>
+        </div>
+        <h3>Utopian Mesh Tee</h3>
+        <p class="product-desc">Premium 240gsm organic cotton with high-gloss liquid print.</p>
+        <div class="product-footer">
+          <span class="product-price">£32.00</span>
+          <button type="button" class="win98-btn">Initialize_Purchase.exe</button>
+        </div>
+      </article>
+
+      <article class="glass-card">
+        <div class="product-mockup" aria-hidden="true">
+          <span>FLASK_RENDER.PNG</span>
+        </div>
+        <h3>Liquid Glass Flask</h3>
+        <p class="product-desc">Vacuum insulated with semi-translucent Frutiger blue finish.</p>
+        <div class="product-footer">
+          <span class="product-price">£45.00</span>
+          <button type="button" class="win98-btn">Initialize_Purchase.exe</button>
+        </div>
+      </article>
+
+      <article class="glass-card">
+        <div class="product-mockup" aria-hidden="true">
+          <span>ASSET_PACK_PREVIEW.GIF</span>
+        </div>
+        <h3>Aero Assets V1</h3>
+        <p class="product-desc">4K Wallpapers, UI Icons, and Soundscapes for your OS.</p>
+        <div class="product-footer">
+          <span class="product-price">£15.00</span>
+          <button type="button" class="win98-btn">Initialize_Purchase.exe</button>
+        </div>
+      </article>
+    </section>
   </main>
 
   <footer class="status-bar" role="contentinfo">
     <span class="panel win-inset">Ready</span>
-    <span class="panel win-inset" id="statusText">Optimistic Future Store — launching soon</span>
+    <span class="panel win-inset" id="statusText">Optimistic Future Store — 3 products loaded</span>
   </footer>
 
   <script>
