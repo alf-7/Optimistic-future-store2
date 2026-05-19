@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Tahoma:wght@400;700&display=swap" rel="stylesheet" />
+  <script async src="https://js.stripe.com/v3/buy-button.js"></script>
   <style>
     :root {
       --win-gray: #c0c0c0;
@@ -499,6 +500,11 @@
       padding-top: 1rem;
     }
 
+    .product-footer stripe-buy-button {
+      display: block;
+      width: 100%;
+    }
+
     .product-price {
       display: block;
       margin-bottom: 0.5rem;
@@ -696,7 +702,10 @@
         <p class="product-desc">Premium 240gsm organic cotton with high-gloss liquid print.</p>
         <div class="product-footer">
           <span class="product-price">£32.00</span>
-          <button type="button" class="win98-btn">Initialize_Purchase.exe</button>
+          <stripe-buy-button
+            buy-button-id="buy_btn_1TYp4m3unV2Hlt8H7hCthucn"
+            publishable-key="pk_test_51TYYR03unV2Hlt8HHpwmAiDHihmPtr7PI7t1D6O2Usl10XzYKygPNAc2bqm3HzxwRowXytc82GCyv9CbbLPe2bcW00HEUIGbAz"
+          ></stripe-buy-button>
         </div>
       </article>
 
