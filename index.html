@@ -1032,7 +1032,7 @@
           <span class="zoom-level" id="zoomLevel" aria-live="polite">100%</span>
           <button type="button" class="win-btn" id="zoomIn" aria-label="Zoom in">+</button>
           <button type="button" class="win-btn" id="zoomReset">Reset</button>
-          <span class="zoom-hint">Scroll or pinch to zoom · Double-click to toggle · Drag when zoomed</span>
+          <span class="zoom-hint">Scroll or pinch to zoom · Click to toggle · Drag when zoomed</span>
         </div>
         <div class="zoom-gallery">
           <div class="zoom-viewport" id="zoomViewport">
@@ -1177,6 +1177,9 @@
       var dragPanY = 0;
       var minScale = 1;
       var maxScale = 4;
+      var pointerDownX = 0;
+      var pointerDownY = 0;
+      var didPan = false;
 
       function clamp(value, min, max) {
         return Math.min(max, Math.max(min, value));
@@ -1281,7 +1284,8 @@
         { passive: false }
       );
 
-      viewport.addEventListener("dblclick", function () {
+      viewport.addEventListener("click", function () {
+        if (didPan) return;
         if (scale === 1) {
           setScale(2.5);
         } else {
@@ -1290,6 +1294,9 @@
       });
 
       viewport.addEventListener("mousedown", function (e) {
+        pointerDownX = e.clientX;
+        pointerDownY = e.clientY;
+        didPan = false;
         if (scale <= 1) return;
         isDragging = true;
         dragStartX = e.clientX;
@@ -1301,6 +1308,9 @@
 
       window.addEventListener("mousemove", function (e) {
         if (!isDragging) return;
+        if (Math.hypot(e.clientX - pointerDownX, e.clientY - pointerDownY) > 5) {
+          didPan = true;
+        }
         panX = dragPanX + (e.clientX - dragStartX);
         panY = dragPanY + (e.clientY - dragStartY);
         updateZoomUi();
