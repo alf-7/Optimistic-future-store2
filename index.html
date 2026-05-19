@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Optimistic Future Store — coming soon. A glossy tomorrow, one click at a time." />
-  <title>Optimistic Future Store</title>
+  <meta name="description" content="Aero System — coming soon. A glossy tomorrow, one click at a time." />
+  <title>Aero System</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Tahoma:wght@400;700&display=swap" rel="stylesheet" />
@@ -320,95 +320,6 @@
       max-width: 520px;
       margin-left: auto;
       margin-right: auto;
-    }
-
-    /* ——— Signup form ——— */
-    .signup {
-      margin-top: 32px;
-      text-align: left;
-    }
-
-    .signup-label {
-      display: block;
-      font-size: 11px;
-      font-weight: 700;
-      color: #000;
-      background: var(--win-gray);
-      padding: 6px 8px;
-      margin-bottom: 0;
-    }
-
-    .signup-fields {
-      display: flex;
-      gap: 0;
-      flex-wrap: wrap;
-      background: var(--win-gray);
-      padding: 8px;
-    }
-
-    .signup-fields.win-inset {
-      border-width: 2px;
-    }
-
-    .signup input[type="email"] {
-      flex: 1 1 200px;
-      min-width: 0;
-      padding: 8px 10px;
-      font-family: inherit;
-      font-size: 11px;
-      background: #fff;
-      color: #000;
-      border: none;
-    }
-
-    .signup input[type="email"].win-inset {
-      border-width: 2px;
-    }
-
-    .signup input[type="email"]:focus {
-      outline: 2px solid var(--win-title);
-      outline-offset: -2px;
-    }
-
-    .signup input[type="email"]::placeholder {
-      color: #808080;
-    }
-
-    .signup .win-btn {
-      flex: 0 0 auto;
-      margin-top: 0;
-      padding: 8px 16px;
-      font-weight: 700;
-    }
-
-    .signup-hint {
-      margin-top: 10px;
-      font-size: 10px;
-      color: rgba(232, 244, 255, 0.55);
-      text-align: center;
-    }
-
-    .form-message {
-      margin-top: 12px;
-      padding: 8px 12px;
-      font-size: 11px;
-      display: none;
-    }
-
-    .form-message.visible {
-      display: block;
-    }
-
-    .form-message.success {
-      background: #c0ffc0;
-      color: #004000;
-      border: 2px solid;
-      border-color: var(--win-highlight) var(--win-shadow) var(--win-shadow) var(--win-highlight);
-    }
-
-    .form-message.error {
-      background: #ffc0c0;
-      color: #400000;
     }
 
     /* ——— Products ——— */
@@ -878,20 +789,6 @@
       .hero-body {
         padding: 28px 16px 24px;
       }
-
-      .signup-fields {
-        flex-direction: column;
-      }
-
-      .signup .win-btn {
-        width: 100%;
-        justify-content: center;
-        padding: 10px;
-      }
-
-      .signup .win-btn:active {
-        padding: 11px 9px 9px 11px;
-      }
     }
   </style>
 </head>
@@ -904,7 +801,6 @@
     <nav class="nav-links" id="navLinks" aria-label="Main">
       <a class="win-btn" href="#hero">Home</a>
       <a class="win-btn" href="#products">Shop</a>
-      <a class="win-btn" href="#signup">Notify Me</a>
       <a class="win-btn" href="#about">About</a>
     </nav>
     <button type="button" class="win-btn menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="navLinks">
@@ -925,7 +821,7 @@
       <div class="hero-panel">
         <article class="hero-window">
           <div class="hero-titlebar" aria-hidden="true">
-            <span>Optimistic Future Store.exe</span>
+            <span>Aero System.exe</span>
             <div class="titlebar-buttons">
               <span class="win-inset">_</span>
               <span class="win-inset">□</span>
@@ -934,39 +830,12 @@
           </div>
           <div class="hero-body">
             <p class="badge win-outset">Coming Soon · v0.98</p>
-            <h1 class="hero-headline" id="hero-heading">The Future, Glossy &amp; Optimistic</h1>
+            <h1 class="hero-headline" id="hero-heading">The Future, Glossy &amp; Aero System</h1>
             <p class="hero-sub" id="about">
-              Retro navigation meets tomorrow’s shine. We’re building a store for products that
-              believe the best is still ahead — and we’ll let you know the moment we open.
+              Retro navigation meets tomorrow’s shine. The Aero System store for premium products
+              built with a high-gloss future aesthetic.
             </p>
 
-            <form
-              class="signup"
-              id="signup"
-              name="coming-soon"
-              method="POST"
-              action="/"
-              data-netlify="true"
-              novalidate
-            >
-              <input type="hidden" name="form-name" value="coming-soon" />
-              <label class="signup-label win-outset" for="email">Notify me when we launch</label>
-              <div class="signup-fields win-inset">
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  class="win-inset"
-                  placeholder="you@example.com"
-                  autocomplete="email"
-                  required
-                  aria-describedby="signup-hint form-message"
-                />
-                <button type="submit" class="win-btn">Sign Up</button>
-              </div>
-              <p class="signup-hint" id="signup-hint">No spam. Unsubscribe anytime. Your optimism is safe with us.</p>
-              <p class="form-message" id="form-message" role="status" aria-live="polite"></p>
-            </form>
           </div>
         </article>
       </div>
@@ -1081,7 +950,7 @@
 
   <footer class="status-bar" role="contentinfo">
     <span class="panel win-inset">Ready</span>
-    <span class="panel win-inset" id="statusText">Optimistic Future Store — 3 products loaded</span>
+    <span class="panel win-inset" id="statusText">Aero System — 3 products loaded</span>
   </footer>
 
   <script>
@@ -1112,51 +981,6 @@
           nav.classList.remove("open");
           toggle.setAttribute("aria-expanded", "false");
         });
-      });
-
-      var form = document.getElementById("signup");
-      var message = document.getElementById("form-message");
-      var emailInput = document.getElementById("email");
-
-      form.addEventListener("submit", function (e) {
-        e.preventDefault();
-        message.classList.remove("visible", "success", "error");
-
-        var value = emailInput.value.trim();
-        if (!value || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-          message.textContent = "Please enter a valid email address.";
-          message.classList.add("visible", "error", "win-outset");
-          emailInput.focus();
-          return;
-        }
-
-        var submitBtn = form.querySelector('button[type="submit"]');
-        submitBtn.disabled = true;
-
-        fetch("/", {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: new URLSearchParams({
-            "form-name": "coming-soon",
-            email: value,
-          }).toString(),
-        })
-          .then(function (res) {
-            if (!res.ok) throw new Error("Submit failed");
-            message.textContent =
-              "You're on the list! We'll email you when Optimistic Future Store goes live.";
-            message.classList.add("visible", "success");
-            form.reset();
-            document.getElementById("statusText").textContent =
-              "Thank you — you're on the notify list";
-          })
-          .catch(function () {
-            message.textContent = "Something went wrong. Please try again.";
-            message.classList.add("visible", "error", "win-outset");
-          })
-          .finally(function () {
-            submitBtn.disabled = false;
-          });
       });
 
       var modal = document.getElementById("aeroModal");
