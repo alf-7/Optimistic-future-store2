@@ -979,7 +979,6 @@
         <div class="product-card-image">
           <img
             src="images/front-facing-man.png"
-            alt="Aero Sphere tee — front view on model"
             width="800"
             height="800"
             loading="lazy"
@@ -1041,7 +1040,6 @@
               <img
                 id="aeroDesignImg"
                 src="images/unisex-shirt-image.png"
-                alt="Aero Sphere unisex shirt — front print view"
                 decoding="async"
               />
             </div>
@@ -1054,9 +1052,8 @@
               aria-selected="true"
               data-view="front"
               data-src="images/unisex-shirt-image.png"
-              data-alt="Aero Sphere unisex shirt — front print view"
             >
-              <img src="images/unisex-shirt-image.png" alt="" width="72" height="72" />
+              <img src="images/unisex-shirt-image.png" width="72" height="72" />
               <span>Front</span>
             </button>
             <button
@@ -1066,9 +1063,8 @@
               aria-selected="false"
               data-view="back"
               data-src="images/unisex-facing-back.png"
-              data-alt="Aero Sphere unisex shirt — back view"
             >
-              <img src="images/unisex-facing-back.png" alt="" width="72" height="72" />
+              <img src="images/unisex-facing-back.png" width="72" height="72" />
               <span>Back</span>
             </button>
           </div>
@@ -1212,9 +1208,9 @@
         updateZoomUi();
       }
 
-      function setZoomImage(src, alt, activeThumb) {
+      function setZoomImage(src, activeThumb) {
         designImg.src = src;
-        designImg.alt = alt;
+        designImg.removeAttribute("alt");
         document.querySelectorAll(".zoom-thumb").forEach(function (btn) {
           var isActive = btn === activeThumb;
           btn.classList.toggle("is-active", isActive);
@@ -1226,13 +1222,13 @@
       document.querySelectorAll(".zoom-thumb").forEach(function (thumb) {
         thumb.addEventListener("click", function () {
           if (thumb.classList.contains("is-active")) return;
-          setZoomImage(thumb.getAttribute("data-src"), thumb.getAttribute("data-alt"), thumb);
+          setZoomImage(thumb.getAttribute("data-src"), thumb);
         });
       });
 
       function openModal() {
         var frontThumb = document.querySelector('.zoom-thumb[data-view="front"]');
-        setZoomImage(imageFront, frontThumb.getAttribute("data-alt"), frontThumb);
+        setZoomImage(imageFront, frontThumb);
         modal.classList.add("is-open");
         modal.setAttribute("aria-hidden", "false");
         document.body.classList.add("modal-open");
