@@ -7,7 +7,7 @@
   <title>Aero System</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Tahoma:wght@400;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&family=Orbitron:wght@500;700;900&family=Tahoma:wght@400;700&display=swap" rel="stylesheet" />
   <script async src="https://js.stripe.com/v3/buy-button.js"></script>
   <style>
     :root {
@@ -545,95 +545,49 @@
       }
     }
 
-    .product-price-sticker {
-      margin: 0.15rem 0 0.55rem;
+    .glass-card--tee .product-price-sticker {
+      position: relative;
+      z-index: 12;
+      margin: -2rem auto 0.1rem;
+      padding: 0;
       text-align: center;
       line-height: 1;
-    }
-
-    .product-price-sticker__wrap {
-      position: relative;
-      display: inline-grid;
-      place-items: center;
-      padding: 0.2rem 0.15rem 0.35rem;
-      transform: rotate(-1.5deg);
-    }
-
-    .product-price-sticker__wrap > .product-price-sticker__layer {
-      grid-area: 1 / 1;
-    }
-
-    .product-price-sticker__wrap::before {
-      content: "";
-      position: absolute;
-      inset: -4px -10px -6px;
-      border-radius: 6px;
-      background: linear-gradient(
-        145deg,
-        rgba(255, 255, 255, 0.22) 0%,
-        rgba(255, 255, 255, 0.04) 40%,
-        rgba(0, 0, 0, 0.15) 100%
-      );
-      box-shadow:
-        0 6px 16px rgba(0, 0, 0, 0.35),
-        inset 0 1px 0 rgba(255, 255, 255, 0.5);
-      z-index: 0;
       pointer-events: none;
     }
 
-    .product-price-sticker__layer {
-      font-family: Orbitron, Tahoma, "MS Sans Serif", sans-serif;
+    .product-price-sticker__text {
+      display: inline-block;
+      font-family: "Arial Rounded MT Bold", "Arial Rounded MT", Nunito, sans-serif;
       font-weight: 900;
-      font-size: clamp(1.85rem, 5.5vw, 2.35rem);
-      letter-spacing: 0.03em;
+      font-size: clamp(2rem, 6vw, 2.6rem);
+      letter-spacing: 0.02em;
       line-height: 1;
       white-space: nowrap;
-      pointer-events: none;
-    }
-
-    .product-price-sticker__layer--black {
-      -webkit-text-stroke: 5px #000;
-      color: transparent;
-      z-index: 1;
-    }
-
-    .product-price-sticker__layer--white {
-      -webkit-text-stroke: 3px #fff;
-      color: transparent;
-      z-index: 2;
-    }
-
-    .product-price-sticker__layer--fill {
-      position: relative;
-      background: linear-gradient(
-        165deg,
-        #00b8ff 0%,
-        #00e5ff 28%,
-        #00ffcc 58%,
-        #00d978 100%
-      );
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      z-index: 3;
-      filter: drop-shadow(0 2px 3px rgba(0, 40, 80, 0.45));
-    }
-
-    .product-price-sticker__layer--fill::after {
-      content: "";
-      position: absolute;
-      left: 8%;
-      right: 12%;
-      top: 12%;
-      height: 38%;
-      border-radius: 50%;
-      background: linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0.65) 0%,
-        rgba(255, 255, 255, 0) 100%
-      );
-      pointer-events: none;
-      mix-blend-mode: screen;
+      color: #00ffff;
+      -webkit-text-stroke: 6px #000000;
+      paint-order: stroke fill;
+      text-shadow:
+        9px 0 0 #ffffff,
+        -9px 0 0 #ffffff,
+        0 9px 0 #ffffff,
+        0 -9px 0 #ffffff,
+        6.36px 6.36px 0 #ffffff,
+        -6.36px 6.36px 0 #ffffff,
+        6.36px -6.36px 0 #ffffff,
+        -6.36px -6.36px 0 #ffffff,
+        10px 0 0 #ffffff,
+        -10px 0 0 #ffffff,
+        0 10px 0 #ffffff,
+        0 -10px 0 #ffffff,
+        7.07px 7.07px 0 #ffffff,
+        -7.07px 7.07px 0 #ffffff,
+        7.07px -7.07px 0 #ffffff,
+        -7.07px -7.07px 0 #ffffff,
+        11px 0 0 #ffffff,
+        -11px 0 0 #ffffff,
+        0 11px 0 #ffffff,
+        0 -11px 0 #ffffff;
+      -webkit-font-smoothing: antialiased;
     }
 
     .glass-card--tee .product-card-image img {
@@ -1057,11 +1011,7 @@
         </div>
         <h3>Aero Sphere</h3>
         <p class="product-price-sticker" aria-label="Price £37.00">
-          <span class="product-price-sticker__wrap">
-            <span class="product-price-sticker__layer product-price-sticker__layer--black" aria-hidden="true">£37.00</span>
-            <span class="product-price-sticker__layer product-price-sticker__layer--white" aria-hidden="true">£37.00</span>
-            <span class="product-price-sticker__layer product-price-sticker__layer--fill">£37.00</span>
-          </span>
+          <span class="product-price-sticker__text">£37.00</span>
         </p>
         <p class="product-desc">Premium 200gsm, 100% Organic Cotton, Oversized Fit. High-gloss liquid print.</p>
         <p class="product-desc product-desc--fit">
