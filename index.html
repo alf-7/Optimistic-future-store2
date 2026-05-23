@@ -418,7 +418,6 @@
     }
 
     .glass-card--tee {
-      overflow: visible;
       border-color: rgba(0, 200, 255, 0.28);
       box-shadow:
         0 0 0 1px rgba(0, 0, 0, 0.35),
@@ -449,106 +448,10 @@
       border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
-    .glass-card--tee .product-card-image.product-zoom {
-      position: relative;
-      overflow: visible;
-      z-index: 5;
-    }
-
-    .product-zoom__stage {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 1;
-      overflow: hidden;
-      border-radius: 8px;
-      cursor: crosshair;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .product-zoom__img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-      pointer-events: none;
-      user-select: none;
-    }
-
-    .product-zoom__lens {
-      display: none;
-      position: absolute;
-      left: 0;
-      top: 0;
-      pointer-events: none;
-      z-index: 2;
-      background: rgba(0, 240, 255, 0.12);
-      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
-      will-change: transform;
-    }
-
-    .product-zoom.is-active .product-zoom__lens {
-      display: block;
-    }
-
-    .product-zoom__pane {
-      display: none;
-      position: absolute;
-      left: calc(100% + 12px);
-      top: 0;
-      width: min(380px, 42vw);
-      height: 100%;
-      min-height: 280px;
-      z-index: 20;
-      padding: 3px;
-      background: var(--win-gray);
-      border: 2px solid;
-      border-color: var(--win-highlight) var(--win-shadow) var(--win-shadow) var(--win-highlight);
-      box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.45);
-    }
-
-    .product-zoom.is-active .product-zoom__pane {
-      display: block;
-    }
-
-    .product-zoom__pane-title {
-      padding: 3px 6px;
-      font-size: 10px;
-      font-weight: 700;
-      color: #000;
-      background: var(--win-gray);
-      border-bottom: 1px solid var(--win-dark);
-      margin-bottom: 3px;
-    }
-
-    .product-zoom__pane-inner {
-      width: 100%;
-      height: calc(100% - 22px);
-      min-height: 250px;
-      background-color: #fff;
-      background-repeat: no-repeat;
-      background-position: 0 0;
-      border: 2px solid;
-      border-color: var(--win-shadow) var(--win-highlight) var(--win-highlight) var(--win-shadow);
-      contain: strict;
-      will-change: background-position;
-    }
-
-    @media (max-width: 1023px), (hover: none) {
-      .product-zoom__stage {
-        cursor: default;
-      }
-
-      .product-zoom__pane,
-      .product-zoom__lens {
-        display: none !important;
-      }
-    }
-
     .glass-card--tee .product-price-sticker {
       position: relative;
       z-index: 12;
-      margin: -2rem auto 0.1rem;
+      margin: -1.75rem auto 0.1rem;
       padding: 0;
       text-align: center;
       line-height: 1;
@@ -566,27 +469,6 @@
       color: #00ffff;
       -webkit-text-stroke: 6px #000000;
       paint-order: stroke fill;
-      text-shadow:
-        9px 0 0 #ffffff,
-        -9px 0 0 #ffffff,
-        0 9px 0 #ffffff,
-        0 -9px 0 #ffffff,
-        6.36px 6.36px 0 #ffffff,
-        -6.36px 6.36px 0 #ffffff,
-        6.36px -6.36px 0 #ffffff,
-        -6.36px -6.36px 0 #ffffff,
-        10px 0 0 #ffffff,
-        -10px 0 0 #ffffff,
-        0 10px 0 #ffffff,
-        0 -10px 0 #ffffff,
-        7.07px 7.07px 0 #ffffff,
-        -7.07px 7.07px 0 #ffffff,
-        7.07px -7.07px 0 #ffffff,
-        -7.07px -7.07px 0 #ffffff,
-        11px 0 0 #ffffff,
-        -11px 0 0 #ffffff,
-        0 11px 0 #ffffff,
-        0 -11px 0 #ffffff;
       -webkit-font-smoothing: antialiased;
     }
 
@@ -751,6 +633,15 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
+      overflow: visible;
+    }
+
+    .zoom-row {
+      display: flex;
+      align-items: stretch;
+      gap: 12px;
+      overflow: visible;
+      min-height: min(52vh, 520px);
     }
 
     .zoom-stage img#aeroDesignImg {
@@ -761,6 +652,45 @@
       height: auto;
       object-fit: contain;
       pointer-events: none;
+    }
+
+    .zoom-popup {
+      display: none;
+      flex: 0 0 min(380px, 42vw);
+      min-width: 260px;
+      padding: 3px;
+      background: var(--win-gray);
+      border: 2px solid;
+      border-color: var(--win-highlight) var(--win-shadow) var(--win-shadow) var(--win-highlight);
+      box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.45);
+    }
+
+    .zoom-popup.is-active {
+      display: block;
+    }
+
+    .zoom-popup__title {
+      padding: 3px 6px;
+      font-size: 10px;
+      font-weight: 700;
+      color: #000;
+      background: var(--win-gray);
+      border-bottom: 1px solid var(--win-dark);
+      margin-bottom: 3px;
+    }
+
+    .zoom-popup__inner {
+      width: 100%;
+      height: calc(100% - 22px);
+      min-height: 250px;
+      background-color: #fff;
+      background-repeat: no-repeat;
+      background-position: 0 0;
+      background-size: auto;
+      border: 2px solid;
+      border-color: var(--win-shadow) var(--win-highlight) var(--win-highlight) var(--win-shadow);
+      contain: strict;
+      will-change: background-position, background-size;
     }
 
     .zoom-thumbnails {
@@ -837,6 +767,15 @@
 
       .zoom-viewport {
         height: min(42vh, 400px);
+      }
+
+      .zoom-row {
+        flex-direction: column;
+        min-height: auto;
+      }
+
+      .zoom-popup {
+        display: none !important;
       }
     }
 
@@ -988,26 +927,14 @@
       <h2 id="products-heading" class="products-heading">Featured Products</h2>
 
       <article class="glass-card glass-card--tee">
-        <div
-          class="product-card-image product-zoom"
-          id="aeroProductZoom"
-          data-zoom-src="images/unisex-shirt-image.png"
-        >
-          <div class="product-zoom__stage">
-            <img
-              class="product-zoom__img"
-              src="images/front-facing-man.png"
-              width="800"
-              height="800"
-              loading="lazy"
-              decoding="async"
-            />
-            <div class="product-zoom__lens win-inset" aria-hidden="true"></div>
-          </div>
-          <div class="product-zoom__pane win-outset" aria-hidden="true">
-            <div class="product-zoom__pane-title win-inset">Zoom_Preview.exe</div>
-            <div class="product-zoom__pane-inner win-inset"></div>
-          </div>
+        <div class="product-card-image">
+          <img
+            src="images/front-facing-man.png"
+            width="800"
+            height="800"
+            loading="lazy"
+            decoding="async"
+          />
         </div>
         <h3>Aero Sphere</h3>
         <p class="product-price-sticker" aria-label="Price £37.00">
@@ -1063,13 +990,19 @@
           <span class="zoom-hint">Scroll or pinch to zoom · Click to toggle · Drag when zoomed</span>
         </div>
         <div class="zoom-gallery">
-          <div class="zoom-viewport" id="zoomViewport">
-            <div class="zoom-stage" id="zoomStage">
-              <img
-                id="aeroDesignImg"
-                src="images/unisex-shirt-image.png"
-                decoding="async"
-              />
+          <div class="zoom-row">
+            <div class="zoom-viewport" id="zoomViewport" data-zoom-src="images/unisex-shirt-image.png">
+              <div class="zoom-stage" id="zoomStage">
+                <img
+                  id="aeroDesignImg"
+                  src="images/unisex-shirt-image.png"
+                  decoding="async"
+                />
+              </div>
+            </div>
+            <div class="zoom-popup win-outset" id="zoomPopup" aria-hidden="true">
+              <div class="zoom-popup__title win-inset">Zoom_Preview.exe</div>
+              <div class="zoom-popup__inner win-inset" id="zoomPopupInner"></div>
             </div>
           </div>
           <div class="zoom-thumbnails" role="tablist" aria-label="Product views">
@@ -1142,92 +1075,6 @@
         });
       });
 
-      (function initProductHoverZoom() {
-        var root = document.getElementById("aeroProductZoom");
-        if (!root || !window.matchMedia("(hover: hover) and (min-width: 1024px)").matches) {
-          return;
-        }
-
-        var stage = root.querySelector(".product-zoom__stage");
-        var lens = root.querySelector(".product-zoom__lens");
-        var paneInner = root.querySelector(".product-zoom__pane-inner");
-        var zoomSrc = root.getAttribute("data-zoom-src");
-        var hiRes = new Image();
-        var hiResReady = false;
-        var rafId = 0;
-        var pointerX = 0;
-        var pointerY = 0;
-
-        function clamp(value, min, max) {
-          return Math.min(max, Math.max(min, value));
-        }
-
-        function ensureHiRes() {
-          if (hiResReady || !zoomSrc) return;
-          hiRes.decoding = "async";
-          hiRes.src = zoomSrc;
-          hiRes.onload = function () {
-            hiResReady = true;
-            paneInner.style.backgroundImage = 'url("' + zoomSrc + '")';
-          };
-        }
-
-        function updateLens() {
-          rafId = 0;
-          if (!hiResReady || !root.classList.contains("is-active")) return;
-
-          var rect = stage.getBoundingClientRect();
-          var paneW = paneInner.clientWidth;
-          var paneH = paneInner.clientHeight;
-          if (!rect.width || !paneW || !paneH) return;
-
-          var x = clamp(pointerX - rect.left, 0, rect.width);
-          var y = clamp(pointerY - rect.top, 0, rect.height);
-          var lensW = rect.width * 0.42;
-          var lensH = rect.height * 0.42;
-          var lx = clamp(x - lensW / 2, 0, rect.width - lensW);
-          var ly = clamp(y - lensH / 2, 0, rect.height - lensH);
-
-          lens.style.width = lensW + "px";
-          lens.style.height = lensH + "px";
-          lens.style.transform = "translate(" + lx + "px, " + ly + "px)";
-
-          var cx = lx + lensW / 2;
-          var cy = ly + lensH / 2;
-          var bgW = hiRes.naturalWidth * (paneW / lensW);
-          var bgH = hiRes.naturalHeight * (paneH / lensH);
-          var bgX = (cx / rect.width) * bgW - paneW / 2;
-          var bgY = (cy / rect.height) * bgH - paneH / 2;
-
-          paneInner.style.backgroundSize = bgW + "px " + bgH + "px";
-          paneInner.style.backgroundPosition = -bgX + "px " + -bgY + "px";
-        }
-
-        function scheduleUpdate(e) {
-          pointerX = e.clientX;
-          pointerY = e.clientY;
-          if (!rafId) {
-            rafId = requestAnimationFrame(updateLens);
-          }
-        }
-
-        stage.addEventListener("mouseenter", function (e) {
-          ensureHiRes();
-          root.classList.add("is-active");
-          scheduleUpdate(e);
-        });
-
-        stage.addEventListener("mouseleave", function () {
-          root.classList.remove("is-active");
-          if (rafId) {
-            cancelAnimationFrame(rafId);
-            rafId = 0;
-          }
-        });
-
-        stage.addEventListener("mousemove", scheduleUpdate);
-      })();
-
       var modal = document.getElementById("aeroModal");
       var openBtn = document.getElementById("aeroViewBuy");
       var viewport = document.getElementById("zoomViewport");
@@ -1249,6 +1096,15 @@
       var pointerDownX = 0;
       var pointerDownY = 0;
       var didPan = false;
+      var zoomPopup = document.getElementById("zoomPopup");
+      var zoomPopupInner = document.getElementById("zoomPopupInner");
+      var zoomSrc = viewport.getAttribute("data-zoom-src") || imageFront;
+      var popupImage = new Image();
+      var popupReady = false;
+      var popupRaf = 0;
+      var popupPointerX = 0;
+      var popupPointerY = 0;
+      var popupZoomFactor = 2.4;
 
       function clamp(value, min, max) {
         return Math.min(max, Math.max(min, value));
@@ -1283,12 +1139,69 @@
       function setZoomImage(src, activeThumb) {
         designImg.src = src;
         designImg.removeAttribute("alt");
+        zoomSrc = src;
+        popupReady = false;
+        zoomPopupInner.style.backgroundImage = "";
         document.querySelectorAll(".zoom-thumb").forEach(function (btn) {
           var isActive = btn === activeThumb;
           btn.classList.toggle("is-active", isActive);
           btn.setAttribute("aria-selected", isActive ? "true" : "false");
         });
         resetZoom();
+      }
+
+      function ensurePopupImage() {
+        if (popupReady || !zoomSrc) return;
+        popupImage.decoding = "async";
+        popupImage.src = zoomSrc;
+        popupImage.onload = function () {
+          popupReady = true;
+          zoomPopupInner.style.backgroundImage = 'url("' + zoomSrc + '")';
+        };
+      }
+
+      function updatePopup() {
+        popupRaf = 0;
+        if (!modal.classList.contains("is-open") || !popupReady) return;
+
+        var rect = viewport.getBoundingClientRect();
+        var paneRect = zoomPopupInner.getBoundingClientRect();
+        if (!rect.width || !paneRect.width || !paneRect.height) return;
+
+        var x = clamp(popupPointerX - rect.left, 0, rect.width);
+        var y = clamp(popupPointerY - rect.top, 0, rect.height);
+        var bgW = rect.width * popupZoomFactor;
+        var bgH = rect.height * popupZoomFactor;
+        var bgX = (x / rect.width) * bgW - paneRect.width / 2;
+        var bgY = (y / rect.height) * bgH - paneRect.height / 2;
+
+        zoomPopupInner.style.backgroundSize = bgW + "px " + bgH + "px";
+        zoomPopupInner.style.backgroundPosition = -bgX + "px " + -bgY + "px";
+      }
+
+      function schedulePopupUpdate(e) {
+        popupPointerX = e.clientX;
+        popupPointerY = e.clientY;
+        if (!popupRaf) {
+          popupRaf = requestAnimationFrame(updatePopup);
+        }
+      }
+
+      function showPopup(e) {
+        if (!modal.classList.contains("is-open")) return;
+        ensurePopupImage();
+        zoomPopup.classList.add("is-active");
+        zoomPopup.setAttribute("aria-hidden", "false");
+        schedulePopupUpdate(e);
+      }
+
+      function hidePopup() {
+        zoomPopup.classList.remove("is-active");
+        zoomPopup.setAttribute("aria-hidden", "true");
+        if (popupRaf) {
+          cancelAnimationFrame(popupRaf);
+          popupRaf = 0;
+        }
       }
 
       document.querySelectorAll(".zoom-thumb").forEach(function (thumb) {
@@ -1304,6 +1217,7 @@
         modal.classList.add("is-open");
         modal.setAttribute("aria-hidden", "false");
         document.body.classList.add("modal-open");
+        ensurePopupImage();
         document.getElementById("aeroModalClose").focus();
       }
 
@@ -1311,6 +1225,7 @@
         modal.classList.remove("is-open");
         modal.setAttribute("aria-hidden", "true");
         document.body.classList.remove("modal-open");
+        hidePopup();
         resetZoom();
         designImg.src = imageFront;
         openBtn.focus();
@@ -1352,6 +1267,10 @@
         },
         { passive: false }
       );
+
+      viewport.addEventListener("mouseenter", showPopup);
+      viewport.addEventListener("mousemove", schedulePopupUpdate);
+      viewport.addEventListener("mouseleave", hidePopup);
 
       viewport.addEventListener("click", function () {
         if (didPan) return;
