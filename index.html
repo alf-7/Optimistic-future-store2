@@ -735,6 +735,102 @@
       outline-offset: -4px;
     }
 
+    /* ——— Info footer ——— */
+    .site-footer {
+      position: relative;
+      z-index: 2;
+      margin-top: 0;
+      padding: 48px 24px 80px;           /* 80px clears the fixed status-bar */
+      background: rgba(6, 10, 22, 0.72);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-top: 1px solid rgba(0, 255, 255, 0.22);
+    }
+
+    .site-footer__inner {
+      max-width: 72rem;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.5rem;
+    }
+
+    .site-footer__col-title {
+      font-family: "Courier New", Courier, monospace;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #00ffff;
+      border-bottom: 1px solid rgba(0, 255, 255, 0.25);
+      padding-bottom: 8px;
+      margin-bottom: 14px;
+    }
+
+    .site-footer__list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .site-footer__list a,
+    .site-footer__list span {
+      font-size: 11px;
+      color: rgba(165, 243, 252, 0.75);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .site-footer__list a:hover {
+      color: #00ffff;
+    }
+
+    .site-footer__ship-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .site-footer__flag {
+      font-size: 14px;
+      line-height: 1;
+    }
+
+    .site-footer__region {
+      font-size: 11px;
+      font-weight: 700;
+      color: #e8f4ff;
+    }
+
+    .site-footer__days {
+      font-size: 10px;
+      font-family: "Courier New", Courier, monospace;
+      color: rgba(0, 255, 255, 0.6);
+    }
+
+    .site-footer__copy {
+      grid-column: 1 / -1;
+      padding-top: 24px;
+      border-top: 1px solid rgba(0, 255, 255, 0.1);
+      text-align: center;
+      font-size: 10px;
+      font-family: "Courier New", Courier, monospace;
+      color: rgba(165, 243, 252, 0.35);
+      letter-spacing: 0.08em;
+    }
+
+    @media (max-width: 640px) {
+      .site-footer__inner {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      .site-footer__copy {
+        grid-column: 1 / -1;
+      }
+    }
+
     /* ——— Footer strip ——— */
     .status-bar {
       position: fixed;
@@ -922,10 +1018,70 @@
     </div>
   </div>
 
-  <footer class="status-bar" role="contentinfo">
+  <footer class="site-footer" role="contentinfo">
+    <div class="site-footer__inner">
+
+      <!-- Shipping -->
+      <section class="site-footer__col" aria-labelledby="footer-shipping">
+        <h3 class="site-footer__col-title" id="footer-shipping">Shipping_Info.exe</h3>
+        <ul class="site-footer__list">
+          <li class="site-footer__ship-row">
+            <span class="site-footer__flag" aria-hidden="true">🇬🇧</span>
+            <span class="site-footer__region">United Kingdom</span>
+            <span class="site-footer__days">4–8 days</span>
+          </li>
+          <li class="site-footer__ship-row">
+            <span class="site-footer__flag" aria-hidden="true">🇺🇸</span>
+            <span class="site-footer__region">United States</span>
+            <span class="site-footer__days">5–12 days</span>
+          </li>
+          <li class="site-footer__ship-row">
+            <span class="site-footer__flag" aria-hidden="true">🇪🇺</span>
+            <span class="site-footer__region">Europe</span>
+            <span class="site-footer__days">4–10 days</span>
+          </li>
+          <li style="margin-top:8px">
+            <span class="site-footer__list a">All orders tracked. Free shipping on orders over £60.</span>
+          </li>
+        </ul>
+      </section>
+
+      <!-- Returns -->
+      <section class="site-footer__col" aria-labelledby="footer-returns">
+        <h3 class="site-footer__col-title" id="footer-returns">Returns.exe</h3>
+        <ul class="site-footer__list">
+          <li><span>30-day hassle-free returns.</span></li>
+          <li><span>Unworn items in original packaging only.</span></li>
+          <li><span>Return shipping covered for UK orders.</span></li>
+          <li style="margin-top:8px">
+            <a href="mailto:returns@aerosystem.store">returns@aerosystem.store</a>
+          </li>
+        </ul>
+      </section>
+
+      <!-- Support -->
+      <section class="site-footer__col" aria-labelledby="footer-support">
+        <h3 class="site-footer__col-title" id="footer-support">Support.exe</h3>
+        <ul class="site-footer__list">
+          <li><span>Mon – Fri, 09:00 – 18:00 GMT</span></li>
+          <li><span>Average response under 24 hrs.</span></li>
+          <li style="margin-top:8px">
+            <a href="mailto:support@aerosystem.store">support@aerosystem.store</a>
+          </li>
+        </ul>
+      </section>
+
+      <p class="site-footer__copy">
+        © <span id="footerYear"></span> Aero System — All rights reserved &nbsp;·&nbsp;
+        Built with a high-gloss future aesthetic.
+      </p>
+    </div>
+  </footer>
+
+  <div class="status-bar" role="status" aria-live="polite">
     <span class="panel win-inset">Ready</span>
     <span class="panel win-inset" id="statusText">Aero System — 3 products loaded</span>
-  </footer>
+  </div>
 
   <script>
     (function () {
@@ -942,6 +1098,9 @@
       }
       updateClock();
       setInterval(updateClock, 1000);
+
+      var yearEl = document.getElementById("footerYear");
+      if (yearEl) yearEl.textContent = new Date().getFullYear();
 
       var toggle = document.getElementById("menuToggle");
       var nav = document.getElementById("navLinks");
