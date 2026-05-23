@@ -860,7 +860,7 @@
           />
         </div>
         <h3>Aero Sphere</h3>
-        <p class="product-price-sticker" aria-label="Price £37.00">
+        <p class="product-price-sticker" aria-label="Price £37.00" data-gbp="37">
           £37.00
         </p>
         <p class="product-desc">Premium 200gsm, 100% Organic Cotton, Oversized Fit. High-gloss liquid print.</p>
@@ -879,7 +879,7 @@
         <h3>Liquid Glass Flask</h3>
         <p class="product-desc">Vacuum insulated with semi-translucent Frutiger blue finish.</p>
         <div class="product-footer">
-          <span class="product-price">£45.00</span>
+          <span class="product-price" data-gbp="45">£45.00</span>
           <button type="button" class="win98-btn" data-aero-open>Initialize_Purchase.exe</button>
         </div>
       </article>
@@ -891,7 +891,7 @@
         <h3>Aero Assets V1</h3>
         <p class="product-desc">4K Wallpapers, UI Icons, and Soundscapes for your OS.</p>
         <div class="product-footer">
-          <span class="product-price">£15.00</span>
+          <span class="product-price" data-gbp="15">£15.00</span>
           <button type="button" class="win98-btn" data-aero-open>Initialize_Purchase.exe</button>
         </div>
       </article>
@@ -1062,6 +1062,69 @@
         }
       });
 
+    })();
+  </script>
+
+  <script>
+    /* ——— Currency detection & conversion ——— */
+    (function () {
+      var RATES_URL = "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/gbp.json";
+      var GEO_URL   = "https://ipapi.co/json/";
+
+      /* Update every [data-gbp] element with a formatted local price */
+      function applyPrices(currency, rate) {
+        var fmt = new Intl.NumberFormat(undefined, {
+          style: "currency",
+          currency: currency,
+          maximumFractionDigits: 2
+        });
+        document.querySelectorAll("[data-gbp]").forEach(function (el) {
+          var gbp = parseFloat(el.getAttribute("data-gbp"));
+          if (isNaN(gbp)) return;
+          var local = gbp * rate;
+          var formatted = fmt.format(local);
+          /* Preserve aria-label accuracy */
+          if (el.hasAttribute("aria-label")) {
+            el.setAttribute("aria-label", "Price " + formatted);
+          }
+          el.textContent = formatted;
+        });
+      }
+
+      /* Exposed globally so other scripts can call it if needed */
+      window.formatPrice = function (gbp, currency, rate) {
+        return new Intl.NumberFormat(undefined, {
+          style: "currency",
+          currency: currency,
+          maximumFractionDigits: 2
+        }).format(gbp * rate);
+      };
+
+      /* Step 1: get the user's currency code */
+      fetch(GEO_URL)
+        .then(function (r) { return r.json(); })
+        .then(function (geo) {
+          var currency = (geo.currency || "GBP").toUpperCase();
+          if (currency === "GBP") {
+            /* Already in GBP — no conversion needed */
+            return;
+          }
+          /* Step 2: fetch GBP exchange rates */
+          return fetch(RATES_URL)
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+              var rates = data.gbp || {};
+              var rate  = rates[currency.toLowerCase()];
+              if (!rate) {
+                /* Currency not found in rate table — stay in GBP */
+                return;
+              }
+              applyPrices(currency, rate);
+            });
+        })
+        .catch(function () {
+          /* Silently fall back to GBP on any network/parse error */
+        });
     })();
   </script>
 </body>
