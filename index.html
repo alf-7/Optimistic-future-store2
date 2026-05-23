@@ -1029,7 +1029,7 @@
           Unisex fit for all genders. Available in sizes S through 2XL. Oversized high-neck silhouette.
         </p>
         <div class="product-cta">
-          <button type="button" class="win98-btn" id="aeroViewBuy">View &amp; Buy</button>
+          <button type="button" class="win98-btn" id="aeroViewBuy" data-aero-open>View &amp; Buy</button>
         </div>
       </article>
 
@@ -1041,7 +1041,7 @@
         <p class="product-desc">Vacuum insulated with semi-translucent Frutiger blue finish.</p>
         <div class="product-footer">
           <span class="product-price">£45.00</span>
-          <button type="button" class="win98-btn">Initialize_Purchase.exe</button>
+          <button type="button" class="win98-btn" data-aero-open>Initialize_Purchase.exe</button>
         </div>
       </article>
 
@@ -1053,7 +1053,7 @@
         <p class="product-desc">4K Wallpapers, UI Icons, and Soundscapes for your OS.</p>
         <div class="product-footer">
           <span class="product-price">£15.00</span>
-          <button type="button" class="win98-btn">Initialize_Purchase.exe</button>
+          <button type="button" class="win98-btn" data-aero-open>Initialize_Purchase.exe</button>
         </div>
       </article>
     </section>
@@ -1162,7 +1162,8 @@
       });
 
       var modal = document.getElementById("aeroModal");
-      var openBtn = document.getElementById("aeroViewBuy");
+      var openButtons = document.querySelectorAll("[data-aero-open]");
+      var lastOpenButton = document.getElementById("aeroViewBuy");
       var viewport = document.getElementById("zoomViewport");
       var stage = document.getElementById("zoomStage");
       var designImg = document.getElementById("aeroDesignImg");
@@ -1383,7 +1384,8 @@
         });
       });
 
-      function openModal() {
+      function openModal(event) {
+        lastOpenButton = (event && event.currentTarget) || lastOpenButton || document.getElementById("aeroViewBuy");
         var frontThumb = document.querySelector('.zoom-thumb[data-view="front"]');
         setZoomImage(imageFront, frontThumb);
         modal.classList.add("is-open");
@@ -1403,10 +1405,14 @@
         hidePopup();
         resetZoom();
         designImg.src = imageFront;
-        openBtn.focus();
+        if (lastOpenButton && typeof lastOpenButton.focus === "function") {
+          lastOpenButton.focus();
+        }
       }
 
-      openBtn.addEventListener("click", openModal);
+      openButtons.forEach(function (btn) {
+        btn.addEventListener("click", openModal);
+      });
 
       document.querySelectorAll("[data-aero-close]").forEach(function (el) {
         el.addEventListener("click", closeModal);
