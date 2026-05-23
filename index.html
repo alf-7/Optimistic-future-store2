@@ -670,13 +670,20 @@
 
     .zoom-popup {
       display: none;
-      flex: 0 0 min(380px, 42vw);
-      min-width: 260px;
+      flex: 0 0 auto;
+      width: min(380px, 42vw);
+      height: min(52vh, 520px);
+      min-width: 280px;
+      min-height: 320px;
       padding: 3px;
       background: var(--win-gray);
       border: 2px solid;
       border-color: var(--win-highlight) var(--win-shadow) var(--win-shadow) var(--win-highlight);
       box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.45);
+      position: relative;
+      resize: both;
+      overflow: hidden;
+      align-self: flex-start;
     }
 
     .zoom-popup.is-active {
@@ -696,7 +703,6 @@
     .zoom-popup__inner {
       width: 100%;
       height: calc(100% - 22px);
-      min-height: 250px;
       background-color: #fff;
       background-repeat: no-repeat;
       background-position: 0 0;
@@ -705,6 +711,19 @@
       border-color: var(--win-shadow) var(--win-highlight) var(--win-highlight) var(--win-shadow);
       contain: strict;
       will-change: background-position, background-size;
+    }
+
+    .zoom-popup::after {
+      content: "";
+      position: absolute;
+      right: 4px;
+      bottom: 4px;
+      width: 14px;
+      height: 14px;
+      pointer-events: none;
+      opacity: 0.45;
+      background:
+        linear-gradient(135deg, transparent 0 42%, rgba(0, 0, 0, 0.45) 42% 48%, transparent 48% 56%, rgba(0, 0, 0, 0.45) 56% 62%, transparent 62%) no-repeat;
     }
 
     .zoom-thumbnails {
@@ -1121,6 +1140,7 @@
       var popupPointerX = 0;
       var popupPointerY = 0;
       var popupZoomFactor = 2.4;
+      var popupResizeObserver = null;
 
       function clamp(value, min, max) {
         return Math.min(max, Math.max(min, value));
@@ -1194,8 +1214,8 @@
 
         var x = clamp(popupPointerX - rect.left, 0, rect.width);
         var y = clamp(popupPointerY - rect.top, 0, rect.height);
-        var lensW = rect.width / popupZoomFactor;
-        var lensH = rect.height / popupZoomFactor;
+        var lensW = paneRect.width / popupZoomFactor;
+        var lensH = paneRect.height / popupZoomFactor;
         var lensX = clamp(x - lensW / 2, 0, rect.width - lensW);
         var lensY = clamp(y - lensH / 2, 0, rect.height - lensH);
         var bgW = rect.width * popupZoomFactor;
@@ -1235,6 +1255,19 @@
           cancelAnimationFrame(popupRaf);
           popupRaf = 0;
         }
+      }
+
+      if (window.ResizeObserver) {
+        popupResizeObserver = new ResizeObserver(function () {
+          if (!modal.classList.contains("is-open") || !zoomPopup.classList.contains("is-active")) return;
+          ensurePopupImage();
+          if (popupRaf) {
+            cancelAnimationFrame(popupRaf);
+            popupRaf = 0;
+          }
+          popupRaf = requestAnimationFrame(updatePopup);
+        });
+        popupResizeObserver.observe(zoomPopupInner);
       }
 
       document.querySelectorAll(".zoom-thumb").forEach(function (thumb) {
