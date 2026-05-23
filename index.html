@@ -617,6 +617,71 @@
       background: #0a0e1a;
     }
 
+    .aero-modal__display-row {
+      display: flex;
+      align-items: stretch;
+      gap: 12px;
+      overflow: visible;
+    }
+
+    .aero-modal__preview {
+      position: relative;
+      flex: 0 0 auto;
+      width: min(380px, 42vw);
+      height: min(52vh, 520px);
+      min-width: 280px;
+      min-height: 320px;
+      padding: 3px;
+      background: var(--win-gray);
+      border: 2px solid;
+      border-color: var(--win-highlight) var(--win-shadow) var(--win-shadow) var(--win-highlight);
+      box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.45);
+      overflow: hidden;
+      align-self: flex-start;
+    }
+
+    .aero-modal__preview-title {
+      padding: 3px 6px;
+      font-size: 10px;
+      font-weight: 700;
+      color: #000;
+      background: var(--win-gray);
+      border-bottom: 1px solid var(--win-dark);
+      margin-bottom: 3px;
+    }
+
+    .aero-modal__preview-body {
+      width: 100%;
+      height: calc(100% - 22px);
+      background: #0a0e1a;
+      border: 2px solid;
+      border-color: var(--win-shadow) var(--win-highlight) var(--win-highlight) var(--win-shadow);
+      overflow: hidden;
+    }
+
+    .aero-modal__preview-body img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #0a0e1a;
+    }
+
+    .aero-modal__preview-handle {
+      position: absolute;
+      right: 1px;
+      bottom: 1px;
+      width: 18px;
+      height: 18px;
+      cursor: nwse-resize;
+      background:
+        linear-gradient(135deg, transparent 0 30%, rgba(0, 0, 0, 0.65) 30% 34%, transparent 34% 44%, rgba(0, 0, 0, 0.65) 44% 48%, transparent 48% 58%, rgba(0, 0, 0, 0.65) 58% 62%, transparent 62%) no-repeat,
+        linear-gradient(135deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.08));
+      border-top: 1px solid rgba(255, 255, 255, 0.45);
+      border-left: 1px solid rgba(255, 255, 255, 0.45);
+      opacity: 0.9;
+    }
+
     .modal-stripe-checkout {
       display: flex;
       justify-content: center;
@@ -640,6 +705,15 @@
     @media (max-width: 640px) {
       .aero-modal__product-title {
         font-size: clamp(1.35rem, 5vw, 1.9rem);
+      }
+
+      .aero-modal__display-row {
+        flex-direction: column;
+      }
+
+      .aero-modal__preview {
+        width: 100%;
+        height: min(42vh, 400px);
       }
     }
 
@@ -846,8 +920,17 @@
       </div>
       <div class="aero-modal__body">
         <h2 id="aeroModalTitle" class="aero-modal__product-title">Aero Sphere</h2>
-        <div class="aero-modal__product-image">
-          <img id="aeroDesignImg" src="images/unisex-shirt-image.png" decoding="async" alt="" />
+        <div class="aero-modal__display-row">
+          <div class="aero-modal__product-image">
+            <img id="aeroDesignImg" src="images/unisex-shirt-image.png" decoding="async" alt="" />
+          </div>
+          <div class="aero-modal__preview" id="aeroPreview">
+            <div class="aero-modal__preview-title">Preview_View.exe</div>
+            <div class="aero-modal__preview-body">
+              <img src="images/unisex-shirt-image.png" alt="" />
+            </div>
+            <div class="aero-modal__preview-handle" id="aeroPreviewResizeHandle" aria-hidden="true"></div>
+          </div>
         </div>
         <div class="modal-stripe-checkout">
           <stripe-buy-button
@@ -897,6 +980,13 @@
       var modal = document.getElementById("aeroModal");
       var openButtons = document.querySelectorAll("[data-aero-open]");
       var lastOpenButton = document.getElementById("aeroViewBuy");
+      var previewPane = document.getElementById("aeroPreview");
+      var previewResizeHandle = document.getElementById("aeroPreviewResizeHandle");
+      var previewResizing = false;
+      var resizeStartX = 0;
+      var resizeStartY = 0;
+      var resizeStartWidth = 0;
+      var resizeStartHeight = 0;
       function openModal(event) {
         lastOpenButton = (event && event.currentTarget) || lastOpenButton || document.getElementById("aeroViewBuy");
         modal.classList.add("is-open");
@@ -921,6 +1011,42 @@
       document.querySelectorAll("[data-aero-close]").forEach(function (el) {
         el.addEventListener("click", closeModal);
       });
+
+      if (previewResizeHandle && previewPane) {
+        previewResizeHandle.addEventListener("pointerdown", function (e) {
+          if (!modal.classList.contains("is-open")) return;
+          e.preventDefault();
+          previewResizing = true;
+          resizeStartX = e.clientX;
+          resizeStartY = e.clientY;
+          resizeStartWidth = previewPane.getBoundingClientRect().width;
+          resizeStartHeight = previewPane.getBoundingClientRect().height;
+          previewResizeHandle.setPointerCapture(e.pointerId);
+        });
+
+        previewResizeHandle.addEventListener("pointermove", function (e) {
+          if (!previewResizing) return;
+          var nextWidth = resizeStartWidth + (e.clientX - resizeStartX);
+          var nextHeight = resizeStartHeight + (e.clientY - resizeStartY);
+          var minWidth = 280;
+          var minHeight = 320;
+          var maxWidth = Math.max(minWidth, window.innerWidth * 0.7);
+          var maxHeight = Math.max(minHeight, window.innerHeight * 0.75);
+          previewPane.style.width = Math.min(maxWidth, Math.max(minWidth, nextWidth)) + "px";
+          previewPane.style.height = Math.min(maxHeight, Math.max(minHeight, nextHeight)) + "px";
+        });
+
+        function stopPreviewResize(e) {
+          if (!previewResizing) return;
+          previewResizing = false;
+          try {
+            previewResizeHandle.releasePointerCapture(e.pointerId);
+          } catch (err) {}
+        }
+
+        previewResizeHandle.addEventListener("pointerup", stopPreviewResize);
+        previewResizeHandle.addEventListener("pointercancel", stopPreviewResize);
+      }
 
       modal.addEventListener("click", function (e) {
         if (e.target === modal) closeModal();
