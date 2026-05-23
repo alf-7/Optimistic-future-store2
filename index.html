@@ -598,88 +598,80 @@
       text-transform: none;
     }
 
+    /* ——— Amazon-style hover zoom ——— */
+    .aero-modal__zoom-wrap {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      position: relative;
+    }
+
     .aero-modal__product-image {
-      width: 100%;
-      margin: 0 auto 14px;
+      position: relative;
+      flex: 0 0 auto;
+      width: min(420px, 100%);
       padding: 4px;
       background: rgba(192, 192, 192, 0.45);
       border: 2px solid;
       border-color: var(--win-highlight) var(--win-shadow) var(--win-shadow) var(--win-highlight);
       box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.4);
+      cursor: crosshair;
     }
 
     .aero-modal__product-image img {
       display: block;
       width: 100%;
-      max-width: 100%;
       height: auto;
       object-fit: contain;
       background: #0a0e1a;
+      pointer-events: none;
+      user-select: none;
     }
 
-    .aero-modal__display-row {
-      display: flex;
-      align-items: stretch;
-      gap: 12px;
-      overflow: visible;
+    /* Lens overlay that follows the cursor */
+    .az-lens {
+      display: none;
+      position: absolute;
+      pointer-events: none;
+      border: 1px solid rgba(0, 240, 255, 0.55);
+      background: rgba(0, 240, 255, 0.10);
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.25);
+      will-change: transform;
     }
 
-    .aero-modal__preview {
+    .aero-modal__product-image.az-active .az-lens {
+      display: block;
+    }
+
+    /* Magnified view panel */
+    .az-panel {
+      display: none;
       position: relative;
-      flex: 0 0 auto;
-      width: min(380px, 42vw);
-      height: min(52vh, 520px);
-      min-width: 280px;
-      min-height: 320px;
-      padding: 3px;
-      background: var(--win-gray);
+      flex: 0 0 min(420px, 44vw);
+      height: 430px;
+      background: #0a0e1a no-repeat center / auto;
       border: 2px solid;
       border-color: var(--win-highlight) var(--win-shadow) var(--win-shadow) var(--win-highlight);
-      box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.45);
-      overflow: hidden;
-      align-self: flex-start;
-    }
-
-    .aero-modal__preview-title {
-      padding: 3px 6px;
-      font-size: 10px;
-      font-weight: 700;
-      color: #000;
-      background: var(--win-gray);
-      border-bottom: 1px solid var(--win-dark);
-      margin-bottom: 3px;
-    }
-
-    .aero-modal__preview-body {
-      width: 100%;
-      height: calc(100% - 22px);
-      background: #0a0e1a;
-      border: 2px solid;
-      border-color: var(--win-shadow) var(--win-highlight) var(--win-highlight) var(--win-shadow);
+      box-shadow: 4px 4px 0 rgba(0,0,0,0.5);
       overflow: hidden;
     }
 
-    .aero-modal__preview-body img {
+    .az-panel.az-active {
       display: block;
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      background: #0a0e1a;
     }
 
-    .aero-modal__preview-handle {
-      position: absolute;
-      right: 1px;
-      bottom: 1px;
-      width: 18px;
-      height: 18px;
-      cursor: nwse-resize;
-      background:
-        linear-gradient(135deg, transparent 0 30%, rgba(0, 0, 0, 0.65) 30% 34%, transparent 34% 44%, rgba(0, 0, 0, 0.65) 44% 48%, transparent 48% 58%, rgba(0, 0, 0, 0.65) 58% 62%, transparent 62%) no-repeat,
-        linear-gradient(135deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.08));
-      border-top: 1px solid rgba(255, 255, 255, 0.45);
-      border-left: 1px solid rgba(255, 255, 255, 0.45);
-      opacity: 0.9;
+    @media (max-width: 820px) {
+      .aero-modal__zoom-wrap {
+        flex-direction: column;
+      }
+      .aero-modal__product-image {
+        width: 100%;
+      }
+      .az-panel {
+        flex: none;
+        width: 100%;
+        height: 280px;
+      }
     }
 
     .modal-stripe-checkout {
@@ -705,15 +697,6 @@
     @media (max-width: 640px) {
       .aero-modal__product-title {
         font-size: clamp(1.35rem, 5vw, 1.9rem);
-      }
-
-      .aero-modal__display-row {
-        flex-direction: column;
-      }
-
-      .aero-modal__preview {
-        width: 100%;
-        height: min(42vh, 400px);
       }
     }
 
@@ -920,17 +903,12 @@
       </div>
       <div class="aero-modal__body">
         <h2 id="aeroModalTitle" class="aero-modal__product-title">Aero Sphere</h2>
-        <div class="aero-modal__display-row">
-          <div class="aero-modal__product-image">
+        <div class="aero-modal__zoom-wrap">
+          <div class="aero-modal__product-image" id="azImageWrap">
             <img id="aeroDesignImg" src="images/unisex-shirt-image.png" decoding="async" alt="" />
+            <div class="az-lens" id="azLens"></div>
           </div>
-          <div class="aero-modal__preview" id="aeroPreview">
-            <div class="aero-modal__preview-title">Preview_View.exe</div>
-            <div class="aero-modal__preview-body">
-              <img src="images/unisex-shirt-image.png" alt="" />
-            </div>
-            <div class="aero-modal__preview-handle" id="aeroPreviewResizeHandle" aria-hidden="true"></div>
-          </div>
+          <div class="az-panel" id="azPanel"></div>
         </div>
         <div class="modal-stripe-checkout">
           <stripe-buy-button
@@ -980,13 +958,73 @@
       var modal = document.getElementById("aeroModal");
       var openButtons = document.querySelectorAll("[data-aero-open]");
       var lastOpenButton = document.getElementById("aeroViewBuy");
-      var previewPane = document.getElementById("aeroPreview");
-      var previewResizeHandle = document.getElementById("aeroPreviewResizeHandle");
-      var previewResizing = false;
-      var resizeStartX = 0;
-      var resizeStartY = 0;
-      var resizeStartWidth = 0;
-      var resizeStartHeight = 0;
+
+      /* ——— Amazon-style zoom ——— */
+      var azWrap   = document.getElementById("azImageWrap");
+      var azLens   = document.getElementById("azLens");
+      var azPanel  = document.getElementById("azPanel");
+      var azImg    = document.getElementById("aeroDesignImg");
+      var azSrc    = "images/unisex-shirt-image.png";
+      var AZ_FACTOR = 3;      /* magnification multiplier */
+      var azRaf = 0;
+      var azCx = 0, azCy = 0;
+
+      function azCalc() {
+        azRaf = 0;
+        var wrap = azWrap.getBoundingClientRect();
+        if (!wrap.width) return;
+
+        var panW = azPanel.offsetWidth;
+        var panH = azPanel.offsetHeight;
+
+        /* lens size = panel / magnification factor */
+        var lensW = panW / AZ_FACTOR;
+        var lensH = panH / AZ_FACTOR;
+
+        /* clamp lens position so it stays inside the image */
+        var lx = Math.max(0, Math.min(azCx - lensW / 2, wrap.width  - lensW));
+        var ly = Math.max(0, Math.min(azCy - lensH / 2, wrap.height - lensH));
+
+        azLens.style.width     = lensW + "px";
+        azLens.style.height    = lensH + "px";
+        azLens.style.transform = "translate(" + lx + "px," + ly + "px)";
+
+        /* background-size = full image blown up by factor */
+        var bgW = wrap.width  * AZ_FACTOR;
+        var bgH = wrap.height * AZ_FACTOR;
+
+        /* background-position: anchor the zoomed area to the lens centre */
+        var bx = -(lx * AZ_FACTOR);
+        var by = -(ly * AZ_FACTOR);
+
+        azPanel.style.backgroundSize     = bgW + "px " + bgH + "px";
+        azPanel.style.backgroundPosition = bx + "px " + by + "px";
+      }
+
+      function azEnter(e) {
+        if (!modal.classList.contains("is-open")) return;
+        azPanel.style.backgroundImage = "url('" + azSrc + "')";
+        azWrap.classList.add("az-active");
+        azPanel.classList.add("az-active");
+        azMove(e);
+      }
+
+      function azMove(e) {
+        var r = azWrap.getBoundingClientRect();
+        azCx = e.clientX - r.left;
+        azCy = e.clientY - r.top;
+        if (!azRaf) azRaf = requestAnimationFrame(azCalc);
+      }
+
+      function azLeave() {
+        azWrap.classList.remove("az-active");
+        azPanel.classList.remove("az-active");
+        if (azRaf) { cancelAnimationFrame(azRaf); azRaf = 0; }
+      }
+
+      azWrap.addEventListener("mouseenter", azEnter);
+      azWrap.addEventListener("mousemove",  azMove);
+      azWrap.addEventListener("mouseleave", azLeave);
       function openModal(event) {
         lastOpenButton = (event && event.currentTarget) || lastOpenButton || document.getElementById("aeroViewBuy");
         modal.classList.add("is-open");
@@ -1011,42 +1049,6 @@
       document.querySelectorAll("[data-aero-close]").forEach(function (el) {
         el.addEventListener("click", closeModal);
       });
-
-      if (previewResizeHandle && previewPane) {
-        previewResizeHandle.addEventListener("pointerdown", function (e) {
-          if (!modal.classList.contains("is-open")) return;
-          e.preventDefault();
-          previewResizing = true;
-          resizeStartX = e.clientX;
-          resizeStartY = e.clientY;
-          resizeStartWidth = previewPane.getBoundingClientRect().width;
-          resizeStartHeight = previewPane.getBoundingClientRect().height;
-          previewResizeHandle.setPointerCapture(e.pointerId);
-        });
-
-        previewResizeHandle.addEventListener("pointermove", function (e) {
-          if (!previewResizing) return;
-          var nextWidth = resizeStartWidth + (e.clientX - resizeStartX);
-          var nextHeight = resizeStartHeight + (e.clientY - resizeStartY);
-          var minWidth = 280;
-          var minHeight = 320;
-          var maxWidth = Math.max(minWidth, window.innerWidth * 0.7);
-          var maxHeight = Math.max(minHeight, window.innerHeight * 0.75);
-          previewPane.style.width = Math.min(maxWidth, Math.max(minWidth, nextWidth)) + "px";
-          previewPane.style.height = Math.min(maxHeight, Math.max(minHeight, nextHeight)) + "px";
-        });
-
-        function stopPreviewResize(e) {
-          if (!previewResizing) return;
-          previewResizing = false;
-          try {
-            previewResizeHandle.releasePointerCapture(e.pointerId);
-          } catch (err) {}
-        }
-
-        previewResizeHandle.addEventListener("pointerup", stopPreviewResize);
-        previewResizeHandle.addEventListener("pointercancel", stopPreviewResize);
-      }
 
       modal.addEventListener("click", function (e) {
         if (e.target === modal) closeModal();
