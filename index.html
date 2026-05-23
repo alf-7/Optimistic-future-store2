@@ -398,6 +398,35 @@
       font-weight: 700;
     }
 
+    .glass-card:not(.glass-card--tee) h3,
+    .glass-card:not(.glass-card--tee) .product-price,
+    .aero-modal__product-title {
+      font-family: "Arial Rounded MT Bold", "Arial Rounded MT", Nunito, sans-serif;
+      font-weight: 900;
+      letter-spacing: 0.02em;
+      color: #00ffff;
+      -webkit-text-stroke: 6px #000000;
+      paint-order: stroke fill;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .glass-card:not(.glass-card--tee) h3 {
+      margin-top: 0.35rem;
+      margin-bottom: 0.35rem;
+      text-align: center;
+      font-size: 1.35rem;
+      line-height: 1.05;
+    }
+
+    .glass-card:not(.glass-card--tee) .product-price {
+      display: block;
+      margin: 0.45rem auto 0.9rem;
+      font-size: 1.55rem;
+      line-height: 1;
+      text-align: center;
+      white-space: nowrap;
+    }
+
     .glass-card .product-desc {
       color: #a5f3fc;
       font-size: 13px;
@@ -452,7 +481,7 @@
       position: relative;
       display: block;
       z-index: 12;
-      margin: -1.75rem auto 0.1rem;
+      margin: 0.45rem auto 0.9rem;
       padding: 0;
       text-align: center;
       line-height: 1;
@@ -536,7 +565,7 @@
     .aero-modal__titlebar {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: flex-end;
       gap: 8px;
       padding: 3px 4px 3px 8px;
       background: linear-gradient(90deg, var(--win-title), #1084d0);
@@ -559,6 +588,14 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
+    }
+
+    .aero-modal__product-title {
+      margin: 0 0 2px;
+      text-align: center;
+      font-size: clamp(1.6rem, 3.6vw, 2.3rem);
+      line-height: 1.05;
+      text-transform: none;
     }
 
     .zoom-toolbar {
@@ -681,7 +718,6 @@
       border-color: var(--win-highlight) var(--win-shadow) var(--win-shadow) var(--win-highlight);
       box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.45);
       position: relative;
-      resize: both;
       overflow: hidden;
       align-self: flex-start;
     }
@@ -724,6 +760,21 @@
       opacity: 0.45;
       background:
         linear-gradient(135deg, transparent 0 42%, rgba(0, 0, 0, 0.45) 42% 48%, transparent 48% 56%, rgba(0, 0, 0, 0.45) 56% 62%, transparent 62%) no-repeat;
+    }
+
+    .zoom-popup__resize-handle {
+      position: absolute;
+      right: 1px;
+      bottom: 1px;
+      width: 18px;
+      height: 18px;
+      cursor: nwse-resize;
+      background:
+        linear-gradient(135deg, transparent 0 30%, rgba(0, 0, 0, 0.65) 30% 34%, transparent 34% 44%, rgba(0, 0, 0, 0.65) 44% 48%, transparent 48% 58%, rgba(0, 0, 0, 0.65) 58% 62%, transparent 62%) no-repeat,
+        linear-gradient(135deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.08));
+      border-top: 1px solid rgba(255, 255, 255, 0.45);
+      border-left: 1px solid rgba(255, 255, 255, 0.45);
+      opacity: 0.9;
     }
 
     .zoom-thumbnails {
@@ -1011,10 +1062,10 @@
   <div id="aeroModal" class="aero-modal" role="dialog" aria-modal="true" aria-labelledby="aeroModalTitle" aria-hidden="true">
     <div class="aero-modal__window">
       <div class="aero-modal__titlebar">
-        <span id="aeroModalTitle">Aero Sphere — View &amp; Buy</span>
         <button type="button" class="win-btn aero-modal__close" id="aeroModalClose" data-aero-close aria-label="Close">×</button>
       </div>
       <div class="aero-modal__body">
+        <h2 id="aeroModalTitle" class="aero-modal__product-title">Aero Sphere</h2>
         <div class="zoom-toolbar">
           <button type="button" class="win-btn" id="zoomOut" aria-label="Zoom out">−</button>
           <span class="zoom-level" id="zoomLevel" aria-live="polite">100%</span>
@@ -1037,6 +1088,7 @@
             <div class="zoom-popup win-outset" id="zoomPopup" aria-hidden="true">
               <div class="zoom-popup__title win-inset">Zoom_Preview.exe</div>
               <div class="zoom-popup__inner win-inset" id="zoomPopupInner"></div>
+              <div class="zoom-popup__resize-handle" id="zoomPopupResizeHandle" aria-hidden="true"></div>
             </div>
           </div>
           <div class="zoom-thumbnails" role="tablist" aria-label="Product views">
@@ -1132,6 +1184,7 @@
       var didPan = false;
       var zoomPopup = document.getElementById("zoomPopup");
       var zoomPopupInner = document.getElementById("zoomPopupInner");
+      var zoomPopupResizeHandle = document.getElementById("zoomPopupResizeHandle");
       var zoomFocusBox = document.getElementById("zoomFocusBox");
       var zoomSrc = viewport.getAttribute("data-zoom-src") || imageFront;
       var popupImage = new Image();
@@ -1141,6 +1194,11 @@
       var popupPointerY = 0;
       var popupZoomFactor = 2.4;
       var popupResizeObserver = null;
+      var isResizingPopup = false;
+      var resizeStartX = 0;
+      var resizeStartY = 0;
+      var resizeStartWidth = 0;
+      var resizeStartHeight = 0;
 
       function clamp(value, min, max) {
         return Math.min(max, Math.max(min, value));
@@ -1257,6 +1315,54 @@
         }
       }
 
+      function updatePopupSize(width, height) {
+        var minWidth = 280;
+        var minHeight = 320;
+        var maxWidth = Math.max(minWidth, viewport.clientWidth + 220);
+        var maxHeight = Math.max(minHeight, viewport.clientHeight + 40);
+        var nextWidth = clamp(width, minWidth, maxWidth);
+        var nextHeight = clamp(height, minHeight, maxHeight);
+        zoomPopup.style.width = nextWidth + "px";
+        zoomPopup.style.height = nextHeight + "px";
+      }
+
+      if (zoomPopupResizeHandle) {
+        zoomPopupResizeHandle.addEventListener("pointerdown", function (e) {
+          if (!modal.classList.contains("is-open")) return;
+          e.preventDefault();
+          isResizingPopup = true;
+          resizeStartX = e.clientX;
+          resizeStartY = e.clientY;
+          resizeStartWidth = zoomPopup.getBoundingClientRect().width;
+          resizeStartHeight = zoomPopup.getBoundingClientRect().height;
+          zoomPopupResizeHandle.setPointerCapture(e.pointerId);
+        });
+
+        zoomPopupResizeHandle.addEventListener("pointermove", function (e) {
+          if (!isResizingPopup) return;
+          var nextWidth = resizeStartWidth + (e.clientX - resizeStartX);
+          var nextHeight = resizeStartHeight + (e.clientY - resizeStartY);
+          updatePopupSize(nextWidth, nextHeight);
+          ensurePopupImage();
+          if (popupRaf) {
+            cancelAnimationFrame(popupRaf);
+            popupRaf = 0;
+          }
+          popupRaf = requestAnimationFrame(updatePopup);
+        });
+
+        function stopResize(e) {
+          if (!isResizingPopup) return;
+          isResizingPopup = false;
+          try {
+            zoomPopupResizeHandle.releasePointerCapture(e.pointerId);
+          } catch (err) {}
+        }
+
+        zoomPopupResizeHandle.addEventListener("pointerup", stopResize);
+        zoomPopupResizeHandle.addEventListener("pointercancel", stopResize);
+      }
+
       if (window.ResizeObserver) {
         popupResizeObserver = new ResizeObserver(function () {
           if (!modal.classList.contains("is-open") || !zoomPopup.classList.contains("is-active")) return;
@@ -1284,6 +1390,9 @@
         modal.setAttribute("aria-hidden", "false");
         document.body.classList.add("modal-open");
         ensurePopupImage();
+        if (zoomPopup.classList.contains("is-active")) {
+          updatePopupSize(zoomPopup.getBoundingClientRect().width, zoomPopup.getBoundingClientRect().height);
+        }
         document.getElementById("aeroModalClose").focus();
       }
 
@@ -1310,6 +1419,19 @@
       document.addEventListener("keydown", function (e) {
         if (e.key === "Escape" && modal.classList.contains("is-open")) {
           closeModal();
+        }
+      });
+
+      window.addEventListener("resize", function () {
+        if (!modal.classList.contains("is-open")) return;
+        if (zoomPopup.classList.contains("is-active")) {
+          updatePopupSize(zoomPopup.getBoundingClientRect().width, zoomPopup.getBoundingClientRect().height);
+          ensurePopupImage();
+          if (popupRaf) {
+            cancelAnimationFrame(popupRaf);
+            popupRaf = 0;
+          }
+          popupRaf = requestAnimationFrame(updatePopup);
         }
       });
 
