@@ -625,6 +625,24 @@
       will-change: transform;
     }
 
+    .zoom-focus-box {
+      display: none;
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: 3;
+      pointer-events: none;
+      background: rgba(0, 255, 255, 0.14);
+      border: 2px solid rgba(255, 255, 255, 0.45);
+      box-shadow:
+        inset 0 0 0 1px rgba(0, 0, 0, 0.35),
+        0 0 0 1px rgba(0, 0, 0, 0.2);
+    }
+
+    .zoom-focus-box.is-active {
+      display: block;
+    }
+
     .zoom-gallery {
       display: flex;
       flex-direction: column;
@@ -995,6 +1013,7 @@
                   decoding="async"
                 />
               </div>
+            <div class="zoom-focus-box" id="zoomFocusBox" aria-hidden="true"></div>
             </div>
             <div class="zoom-popup win-outset" id="zoomPopup" aria-hidden="true">
               <div class="zoom-popup__title win-inset">Zoom_Preview.exe</div>
@@ -1094,6 +1113,7 @@
       var didPan = false;
       var zoomPopup = document.getElementById("zoomPopup");
       var zoomPopupInner = document.getElementById("zoomPopupInner");
+      var zoomFocusBox = document.getElementById("zoomFocusBox");
       var zoomSrc = viewport.getAttribute("data-zoom-src") || imageFront;
       var popupImage = new Image();
       var popupReady = false;
@@ -1153,7 +1173,15 @@
         popupImage.onload = function () {
           popupReady = true;
           zoomPopupInner.style.backgroundImage = 'url("' + zoomSrc + '")';
+          if (popupRaf) {
+            cancelAnimationFrame(popupRaf);
+            popupRaf = 0;
+          }
+          popupRaf = requestAnimationFrame(updatePopup);
         };
+        if (popupImage.complete && popupImage.naturalWidth > 0) {
+          popupImage.onload();
+        }
       }
 
       function updatePopup() {
@@ -1166,11 +1194,18 @@
 
         var x = clamp(popupPointerX - rect.left, 0, rect.width);
         var y = clamp(popupPointerY - rect.top, 0, rect.height);
+        var lensW = rect.width / popupZoomFactor;
+        var lensH = rect.height / popupZoomFactor;
+        var lensX = clamp(x - lensW / 2, 0, rect.width - lensW);
+        var lensY = clamp(y - lensH / 2, 0, rect.height - lensH);
         var bgW = rect.width * popupZoomFactor;
         var bgH = rect.height * popupZoomFactor;
         var bgX = (x / rect.width) * bgW - paneRect.width / 2;
         var bgY = (y / rect.height) * bgH - paneRect.height / 2;
 
+        zoomFocusBox.style.width = lensW + "px";
+        zoomFocusBox.style.height = lensH + "px";
+        zoomFocusBox.style.transform = "translate(" + lensX + "px, " + lensY + "px)";
         zoomPopupInner.style.backgroundSize = bgW + "px " + bgH + "px";
         zoomPopupInner.style.backgroundPosition = -bgX + "px " + -bgY + "px";
       }
@@ -1188,12 +1223,14 @@
         ensurePopupImage();
         zoomPopup.classList.add("is-active");
         zoomPopup.setAttribute("aria-hidden", "false");
+        zoomFocusBox.classList.add("is-active");
         schedulePopupUpdate(e);
       }
 
       function hidePopup() {
         zoomPopup.classList.remove("is-active");
         zoomPopup.setAttribute("aria-hidden", "true");
+        zoomFocusBox.classList.remove("is-active");
         if (popupRaf) {
           cancelAnimationFrame(popupRaf);
           popupRaf = 0;
